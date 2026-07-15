@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>匯率計算機</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; border: none; background: none; }
+
+.v-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e2d2b;
+}
+
+.v-phone {
+  background: #5a7873;
+  width: 100%;
+  max-width: 414px;
+  min-width: 320px;
+  border-radius: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.v-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 64px 0 24px;
+}
+
+/* --- Display --- */
+.v-display {
+  background: rgba(0,0,0,0.15);
+  border-radius: 16px;
+  padding: 16px;
+  width: calc(100% - 48px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.v-main-row {
+  position: relative;
+  height: 56px;
+}
+
+.v-flag-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.v-flag-btn:active { transform: translateY(-50%) scale(0.95); }
+
+.v-flag-circle {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.v-number-area {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: calc(100% - 66px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.v-expr {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+}
+.v-expr::-webkit-scrollbar { display: none; }
+
+.v-num {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: clamp(24px, 8vw, 48px);
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: 100%;
+  text-align: right;
+  scrollbar-width: none;
+}
+.v-num::-webkit-scrollbar { display: none; }
+
+/* --- Currency section --- */
+.v-cur-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.v-cur-label {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: rgba(0,0,0,0.3);
+}
+
+.v-cur-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.v-cur-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.v-cur-btn:active { transform: scale(0.95); }
+
+.v-flag-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.v-amt {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  color: rgba(255,255,255,0.8);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-divider {
+  background: rgba(0,0,0,0.15);
+  width: 1px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* --- Keyboard --- */
+.v-keyboard {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: calc(100% - 48px);
+}
+
+.v-key {
+  cursor: pointer;
+  transition: transform 0.1s;
+  aspect-ratio: 1;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.v-key:active { transform: scale(0.95); }
+
+.v-key-plus {
+  grid-row: span 2;
+  aspect-ratio: unset;
+  align-self: stretch;
+}
+
+.btn-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Marquee --- */
+.v-mq-wrap {
+  background: rgba(0,0,0,0.1);
+  border-radius: 12px;
+  height: 32px;
+  width: calc(100% - 48px);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0px 1px 2px 0px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.v-mq-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.v-mq-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: v-pulse 1.5s ease-in-out infinite;
+}
+
+.v-mq-text {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+
+@keyframes v-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.v-mq-scroll {
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+  display: flex !important;
+  align-items: center;
+}
+
+.v-mq-inner {
+  display: inline-block;
+  white-space: nowrap;
+  animation: v-mq-scroll 120s linear infinite;
+  will-change: transform;
+}
+.v-mq-inner:hover { animation-play-state: paused; }
+
+@keyframes v-mq-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.mq-item {
+  display: inline-block;
+  margin-right: 24px;
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+}
+.mq-code  { color: rgba(255,255,255,0.8); font-weight: 400; }
+.mq-rate  { color: rgba(255,255,255,0.6); margin-left: 6px; }
+.mq-change { margin-left: 6px; }
+
+/* --- Menu --- */
+.v-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  border-radius: 40px;
+  z-index: 40;
+}
+.v-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.v-menu-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 550px;
+  background: #333333;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0px -6px 12px 0px rgba(0,0,0,0.3);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+  z-index: 50;
+  overflow: hidden;
+}
+.v-menu-panel.open { transform: translateY(0); }
+
+.v-search-wrap {
+  position: absolute;
+  height: 48px;
+  left: 24px;
+  right: 24px;
+  top: 32px;
+}
+.v-search-bg {
+  position: absolute;
+  background: rgba(255,255,255,0.2);
+  inset: 0;
+  border-radius: 48px;
+}
+.v-search-input {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  padding: 0 16px;
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  color: white;
+  outline: none;
+}
+.v-search-input::placeholder { color: rgba(255,255,255,0.4); }
+
+.v-cur-list-wrap {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 96px;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.v-cur-list { position: relative; }
+
+/* Currency list items */
+.cli {
+  position: absolute;
+  height: 72px;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.cli:hover { background: rgba(255,255,255,0.05); }
+
+.cli-click {
+  position: absolute;
+  inset: 0;
+  right: 52px;
+  display: flex;
+  align-items: center;
+}
+
+.cli-flag {
+  position: absolute;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cli-info {
+  position: absolute;
+  left: 72px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.cli-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  overflow: hidden;
+}
+.cli-code {
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: white;
+  flex-shrink: 0;
+}
+.cli-name {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cli-bot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cli-region {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+}
+.cli-rate {
+  font-family: Roboto, sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+}
+
+.cli-fav {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.1s;
+}
+.cli-fav:hover { transform: translateY(-50%) scale(1.1); }
+.cli-fav:active { transform: translateY(-50%) scale(0.9); }
+
+.cli-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+
+@media (max-width: 414px) {
+  .v-phone { border-radius: 0; min-height: 100vh; }
+}
+
+
+</style>
+</head>
+<body style="margin:0;padding:0;">
+
+<div class="v-wrapper">
+  <div class="v-phone">
+    <div class="v-inner">
+
+      <!-- Display -->
+      <div class="v-display">
+        <div class="v-main-row">
+          <button class="v-flag-btn" id="v-flag-main-btn">
+            <img id="v-flag-main" class="v-flag-circle" src="https://flagcdn.com/w80/tw.png" alt="TWD"/>
+          </button>
+          <div class="v-number-area">
+            <div id="v-expr" class="v-expr" style="display:none"></div>
+            <div id="v-num" class="v-num">0</div>
+          </div>
+        </div>
+
+        <div class="v-cur-section">
+          <div class="v-cur-label">選擇貨幣</div>
+          <div class="v-cur-row">
+            <button class="v-cur-btn" id="v-cur1-btn">
+              <img id="v-flag-c1" class="v-flag-sm" src="https://flagcdn.com/w80/us.png" alt="USD"/>
+              <span id="v-amt1" class="v-amt">0.00</span>
+            </button>
+            <div class="v-divider"></div>
+            <button class="v-cur-btn" id="v-cur2-btn">
+              <img id="v-flag-c2" class="v-flag-sm" src="https://flagcdn.com/w80/jp.png" alt="JPY"/>
+              <span id="v-amt2" class="v-amt">0.00</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keyboard -->
+      <div class="v-keyboard">
+        <!-- Row 1 -->
+        <button class="v-key" id="v-btn-c"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="black" fill-opacity="0.4"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">C</text></svg></button>
+        <button class="v-key" id="v-btn-bs">
+          <svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none">
+            <circle cx="34.875" cy="34.875" r="34.875" fill="black" fill-opacity="0.4"/>
+            <path clip-rule="evenodd" d="M21.1847 26.6513C22.0118 25.6076 23.2639 25 24.5878 25H48.6419C51.0488 25 53 26.9699 53 29.4V42.6C53 45.0301 51.0488 47 48.6419 47H24.5878C23.2639 47 22.0118 46.3924 21.1847 45.3487L15.955 38.7487C14.6817 37.1417 14.6817 34.8583 15.955 33.2513L21.1847 26.6513ZM29.7958 40.0572C29.3723 40.4845 29.3697 41.1769 29.7901 41.6075L29.989 41.8113C30.4135 42.246 31.1074 42.2487 31.5351 41.8172L34.7974 38.5259C35.2229 38.0967 35.9123 38.0967 36.3377 38.5259L39.6001 41.8172C40.0277 42.2487 40.7216 42.246 41.1461 41.8113L41.3451 41.6075C41.7655 41.1769 41.7629 40.4845 41.3393 40.0572L38.0808 36.7697C37.6555 36.3405 37.6549 35.6445 38.0796 35.2147L41.3126 31.9428C41.7351 31.5153 41.7371 30.8238 41.3172 30.3937L41.1171 30.1888C40.6926 29.754 39.9987 29.7514 39.571 30.1829L36.3377 33.4452C35.9123 33.8744 35.2228 33.8744 34.7974 33.4452L31.5641 30.1829C31.1364 29.7514 30.4425 29.754 30.018 30.1888L29.8179 30.3937C29.398 30.8238 29.4001 31.5153 29.8225 31.9428L33.0555 35.2147C33.4802 35.6445 33.4797 36.3405 33.0543 36.7697L29.7958 40.0572Z" fill="white" fill-rule="evenodd"/>
+          </svg>
+        </button>
+        <button class="v-key" id="v-btn-loc">
+          <svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none">
+            <circle cx="34.875" cy="34.875" r="34.875" fill="#FFDC91"/>
+            <path clip-rule="evenodd" d="M47.0812 38.6445C48.1923 36.6422 48.825 34.3379 48.825 31.8857C48.825 24.1813 42.5794 17.9357 34.875 17.9357C27.1706 17.9357 20.925 24.1813 20.925 31.8857C20.925 34.3379 21.5577 36.6422 22.6687 38.6445C25.0485 42.9331 34.875 52.8107 34.875 52.8107C34.875 52.8107 44.7015 42.9331 47.0812 38.6445ZM34.875 38.8607C38.7272 38.8607 41.85 35.7379 41.85 31.8857C41.85 28.0335 38.7272 24.9107 34.875 24.9107C31.0228 24.9107 27.9 28.0335 27.9 31.8857C27.9 35.7379 31.0228 38.8607 34.875 38.8607Z" fill="black" fill-opacity="0.25" fill-rule="evenodd"/>
+          </svg>
+        </button>
+        <button class="v-key" id="v-btn-div"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="black" fill-opacity="0.4"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">÷</text></svg></button>
+
+        <!-- Row 2 -->
+        <button class="v-key" id="v-btn-7"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">7</text></svg></button>
+        <button class="v-key" id="v-btn-8"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">8</text></svg></button>
+        <button class="v-key" id="v-btn-9"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">9</text></svg></button>
+        <button class="v-key" id="v-btn-mul"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="black" fill-opacity="0.4"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">×</text></svg></button>
+
+        <!-- Row 3 -->
+        <button class="v-key" id="v-btn-4"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">4</text></svg></button>
+        <button class="v-key" id="v-btn-5"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">5</text></svg></button>
+        <button class="v-key" id="v-btn-6"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">6</text></svg></button>
+        <button class="v-key" id="v-btn-sub">
+          <svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none">
+            <circle cx="34.875" cy="34.875" r="34.875" fill="black" fill-opacity="0.4"/>
+            <path d="M46.1562 36.9375H22.7656V32.625H46.1562V36.9375Z" fill="white"/>
+          </svg>
+        </button>
+
+        <!-- Row 4: 1, 2, 3, then + (spans rows 4-5) -->
+        <button class="v-key" id="v-btn-1"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">1</text></svg></button>
+        <button class="v-key" id="v-btn-2"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">2</text></svg></button>
+        <button class="v-key" id="v-btn-3"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">3</text></svg></button>
+        <button class="v-key v-key-plus" id="v-btn-add">
+          <svg class="btn-svg" viewBox="0 0 70 164" fill="none" preserveAspectRatio="none" style="width:100%;height:100%">
+            <path d="M35 0C54.33 0 70 15.67 70 35V129C70 148.33 54.33 164 35 164C15.67 164 0 148.33 0 129V35C0 15.67 15.67 0 35 0Z" fill="black" fill-opacity="0.4"/>
+            <path d="M22.0663 80.1535L33.1038 80.0541L33.2198 69.0663L37.2304 69L37.131 80.0043L48.1353 79.9049L48.069 83.9155L37.0813 84.0315L36.9818 95.069L32.9712 95.1353L33.0706 84.0647L22 84.1641L22.0663 80.1535Z" fill="white"/>
+          </svg>
+        </button>
+
+        <!-- Row 5: 0, ., = -->
+        <button class="v-key" id="v-btn-0"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">0</text></svg></button>
+        <button class="v-key" id="v-btn-dot"><svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.1"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">.</text></svg></button>
+        <button class="v-key" id="v-btn-eq">
+          <svg class="btn-svg" viewBox="0 0 70 70" fill="none" preserveAspectRatio="none"><circle cx="34.875" cy="34.875" r="34.875" fill="#F5F5F5" fill-opacity="0.4"/><text x="34.875" y="34.875" fill="white" font-size="36" font-family="Roboto,sans-serif" text-anchor="middle" dominant-baseline="central">=</text></svg>
+        </button>
+      </div>
+
+      <!-- Marquee -->
+      <div class="v-mq-wrap">
+        <div id="v-mq-loading" class="v-mq-loading">
+          <div class="v-mq-dot"></div>
+          <span class="v-mq-text">載入匯率中...</span>
+        </div>
+        <div id="v-mq-scroll" class="v-mq-scroll" style="display:none">
+          <div id="v-mq-inner" class="v-mq-inner"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Menu backdrop (inside phone for clipping) -->
+    <div id="v-backdrop" class="v-backdrop"></div>
+
+    <!-- Menu panel -->
+    <div id="v-menu" class="v-menu-panel">
+      <div class="v-search-wrap">
+        <div class="v-search-bg"></div>
+        <input type="text" id="v-search" class="v-search-input" placeholder="Enter country name"/>
+      </div>
+      <div class="v-cur-list-wrap">
+        <div id="v-cur-list" class="v-cur-list"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+
+// ============================================================
+// 匯率計算機 — Standalone Vanilla JS
+// ============================================================
+(function () {
+
+// === SVG PATHS ===
+var P_BACKSPACE = "M21.1847 26.6513C22.0118 25.6076 23.2639 25 24.5878 25H48.6419C51.0488 25 53 26.9699 53 29.4V42.6C53 45.0301 51.0488 47 48.6419 47H24.5878C23.2639 47 22.0118 46.3924 21.1847 45.3487L15.955 38.7487C14.6817 37.1417 14.6817 34.8583 15.955 33.2513L21.1847 26.6513ZM29.7958 40.0572C29.3723 40.4845 29.3697 41.1769 29.7901 41.6075L29.989 41.8113C30.4135 42.246 31.1074 42.2487 31.5351 41.8172L34.7974 38.5259C35.2229 38.0967 35.9123 38.0967 36.3377 38.5259L39.6001 41.8172C40.0277 42.2487 40.7216 42.246 41.1461 41.8113L41.3451 41.6075C41.7655 41.1769 41.7629 40.4845 41.3393 40.0572L38.0808 36.7697C37.6555 36.3405 37.6549 35.6445 38.0796 35.2147L41.3126 31.9428C41.7351 31.5153 41.7371 30.8238 41.3172 30.3937L41.1171 30.1888C40.6926 29.754 39.9987 29.7514 39.571 30.1829L36.3377 33.4452C35.9123 33.8744 35.2228 33.8744 34.7974 33.4452L31.5641 30.1829C31.1364 29.7514 30.4425 29.754 30.018 30.1888L29.8179 30.3937C29.398 30.8238 29.4001 31.5153 29.8225 31.9428L33.0555 35.2147C33.4802 35.6445 33.4797 36.3405 33.0543 36.7697L29.7958 40.0572Z";
+var P_LOCATION  = "M47.0812 38.6445C48.1923 36.6422 48.825 34.3379 48.825 31.8857C48.825 24.1813 42.5794 17.9357 34.875 17.9357C27.1706 17.9357 20.925 24.1813 20.925 31.8857C20.925 34.3379 21.5577 36.6422 22.6687 38.6445C25.0485 42.9331 34.875 52.8107 34.875 52.8107C34.875 52.8107 44.7015 42.9331 47.0812 38.6445ZM34.875 38.8607C38.7272 38.8607 41.85 35.7379 41.85 31.8857C41.85 28.0335 38.7272 24.9107 34.875 24.9107C31.0228 24.9107 27.9 28.0335 27.9 31.8857C27.9 35.7379 31.0228 38.8607 34.875 38.8607Z";
+var P_MINUS     = "M46.1562 36.9375H22.7656V32.625H46.1562V36.9375Z";
+var P_PLUS_BG   = "M35 0C54.33 0 70 15.67 70 35V129C70 148.33 54.33 164 35 164C15.67 164 0 148.33 0 129V35C0 15.67 15.67 0 35 0Z";
+var P_PLUS_SYM  = "M22.0663 80.1535L33.1038 80.0541L33.2198 69.0663L37.2304 69L37.131 80.0043L48.1353 79.9049L48.069 83.9155L37.0813 84.0315L36.9818 95.069L32.9712 95.1353L33.0706 84.0647L22 84.1641L22.0663 80.1535Z";
+
+// === DATA ===
+var CURRENCIES        = [{"code":"TWD","name":"New Taiwan Dollar","country":"tw","region":"台灣","symbol":"NT$"},{"code":"JPY","name":"Japanese Yen","country":"jp","region":"日本","symbol":"¥"},{"code":"CNY","name":"Chinese Yuan","country":"cn","region":"中國","symbol":"¥"},{"code":"HKD","name":"Hong Kong Dollar","country":"hk","region":"香港","symbol":"HK$"},{"code":"KRW","name":"South Korean Won","country":"kr","region":"韓國","symbol":"₩"},{"code":"SGD","name":"Singapore Dollar","country":"sg","region":"新加坡","symbol":"S$"},{"code":"THB","name":"Thai Baht","country":"th","region":"泰國","symbol":"฿"},{"code":"IDR","name":"Indonesian Rupiah","country":"id","region":"印尼","symbol":"Rp"},{"code":"MYR","name":"Malaysian Ringgit","country":"my","region":"馬來西亞","symbol":"RM"},{"code":"PHP","name":"Philippine Peso","country":"ph","region":"菲律賓","symbol":"₱"},{"code":"VND","name":"Vietnamese Dong","country":"vn","region":"越南","symbol":"₫"},{"code":"INR","name":"Indian Rupee","country":"in","region":"印度","symbol":"₹"},{"code":"PKR","name":"Pakistani Rupee","country":"pk","region":"巴基斯坦","symbol":"₨"},{"code":"BDT","name":"Bangladeshi Taka","country":"bd","region":"孟加拉","symbol":"৳"},{"code":"LKR","name":"Sri Lankan Rupee","country":"lk","region":"斯里蘭卡","symbol":"Rs"},{"code":"NPR","name":"Nepalese Rupee","country":"np","region":"尼泊爾","symbol":"Rs"},{"code":"MMK","name":"Myanmar Kyat","country":"mm","region":"緬甸","symbol":"K"},{"code":"KHR","name":"Cambodian Riel","country":"kh","region":"柬埔寨","symbol":"៛"},{"code":"LAK","name":"Lao Kip","country":"la","region":"寮國","symbol":"₭"},{"code":"AUD","name":"Australian Dollar","country":"au","region":"澳洲","symbol":"A$"},{"code":"NZD","name":"New Zealand Dollar","country":"nz","region":"紐西蘭","symbol":"NZ$"},{"code":"USD","name":"US Dollar","country":"us","region":"美國","symbol":"$"},{"code":"CAD","name":"Canadian Dollar","country":"ca","region":"加拿大","symbol":"C$"},{"code":"MXN","name":"Mexican Peso","country":"mx","region":"墨西哥","symbol":"$"},{"code":"BRL","name":"Brazilian Real","country":"br","region":"巴西","symbol":"R$"},{"code":"ARS","name":"Argentine Peso","country":"ar","region":"阿根廷","symbol":"$"},{"code":"CLP","name":"Chilean Peso","country":"cl","region":"智利","symbol":"$"},{"code":"COP","name":"Colombian Peso","country":"co","region":"哥倫比亞","symbol":"$"},{"code":"PEN","name":"Peruvian Sol","country":"pe","region":"秘魯","symbol":"S/."},{"code":"UYU","name":"Uruguayan Peso","country":"uy","region":"烏拉圭","symbol":"$"},{"code":"VES","name":"Venezuelan Bolívar","country":"ve","region":"委內瑞拉","symbol":"Bs"},{"code":"EUR","name":"Euro","country":"eu","region":"歐盟","symbol":"€"},{"code":"GBP","name":"British Pound","country":"gb","region":"英國","symbol":"£"},{"code":"CHF","name":"Swiss Franc","country":"ch","region":"瑞士","symbol":"CHF"},{"code":"SEK","name":"Swedish Krona","country":"se","region":"瑞典","symbol":"kr"},{"code":"NOK","name":"Norwegian Krone","country":"no","region":"挪威","symbol":"kr"},{"code":"DKK","name":"Danish Krone","country":"dk","region":"丹麥","symbol":"kr"},{"code":"PLN","name":"Polish Zloty","country":"pl","region":"波蘭","symbol":"zł"},{"code":"CZK","name":"Czech Koruna","country":"cz","region":"捷克","symbol":"Kč"},{"code":"HUF","name":"Hungarian Forint","country":"hu","region":"匈牙利","symbol":"Ft"},{"code":"RON","name":"Romanian Leu","country":"ro","region":"羅馬尼亞","symbol":"lei"},{"code":"BGN","name":"Bulgarian Lev","country":"bg","region":"保加利亞","symbol":"лв"},{"code":"RUB","name":"Russian Ruble","country":"ru","region":"俄羅斯","symbol":"₽"},{"code":"UAH","name":"Ukrainian Hryvnia","country":"ua","region":"烏克蘭","symbol":"₴"},{"code":"TRY","name":"Turkish Lira","country":"tr","region":"土耳其","symbol":"₺"},{"code":"ISK","name":"Icelandic Króna","country":"is","region":"冰島","symbol":"kr"},{"code":"AED","name":"UAE Dirham","country":"ae","region":"阿聯酋","symbol":"د.إ"},{"code":"SAR","name":"Saudi Riyal","country":"sa","region":"沙烏地阿拉伯","symbol":"﷼"},{"code":"QAR","name":"Qatari Riyal","country":"qa","region":"卡達","symbol":"ر.ق"},{"code":"KWD","name":"Kuwaiti Dinar","country":"kw","region":"科威特","symbol":"د.ك"},{"code":"BHD","name":"Bahraini Dinar","country":"bh","region":"巴林","symbol":".د.ب"},{"code":"OMR","name":"Omani Rial","country":"om","region":"阿曼","symbol":"ر.ع."},{"code":"JOD","name":"Jordanian Dinar","country":"jo","region":"約旦","symbol":"د.ا"},{"code":"ILS","name":"Israeli Shekel","country":"il","region":"以色列","symbol":"₪"},{"code":"EGP","name":"Egyptian Pound","country":"eg","region":"埃及","symbol":"£"},{"code":"ZAR","name":"South African Rand","country":"za","region":"南非","symbol":"R"},{"code":"NGN","name":"Nigerian Naira","country":"ng","region":"奈及利亞","symbol":"₦"},{"code":"KES","name":"Kenyan Shilling","country":"ke","region":"肯亞","symbol":"Sh"},{"code":"GHS","name":"Ghanaian Cedi","country":"gh","region":"迦納","symbol":"₵"},{"code":"MAD","name":"Moroccan Dirham","country":"ma","region":"摩洛哥","symbol":"د.م."},{"code":"TND","name":"Tunisian Dinar","country":"tn","region":"突尼西亞","symbol":"د.ت"}];
+var MARQUEE_CURRENCIES = ["USD","EUR","JPY","GBP","AUD","CAD","CHF","CNY","HKD","NZD","SEK","KRW","SGD","NOK","MXN","INR","RUB","ZAR","TRY","BRL","DKK","PLN","THB","IDR","HUF","CZK","ILS","CLP","PHP","AED","COP","SAR","MYR","RON","ARS","VND","PKR","EGP","QAR","KWD","UAH","NGN","BDT","MAD"];
+var TIMEZONE_MAP       = {"Asia/Taipei":"tw","Asia/Tokyo":"jp","Asia/Shanghai":"cn","Asia/Hong_Kong":"hk","Asia/Seoul":"kr","Asia/Singapore":"sg","Asia/Bangkok":"th","Asia/Jakarta":"id","Asia/Kuala_Lumpur":"my","Asia/Manila":"ph","Asia/Ho_Chi_Minh":"vn","Asia/Kolkata":"in","America/New_York":"us","America/Los_Angeles":"us","America/Chicago":"us","America/Toronto":"ca","America/Mexico_City":"mx","America/Sao_Paulo":"br","Europe/London":"gb","Europe/Paris":"eu","Europe/Berlin":"eu","Europe/Rome":"eu","Europe/Madrid":"eu","Europe/Amsterdam":"eu","Europe/Zurich":"ch","Europe/Stockholm":"se","Europe/Oslo":"no","Europe/Copenhagen":"dk","Europe/Warsaw":"pl","Europe/Prague":"cz","Europe/Budapest":"hu","Europe/Moscow":"ru","Europe/Istanbul":"tr","Australia/Sydney":"au","Australia/Melbourne":"au","Pacific/Auckland":"nz"};
+
+// === STATE ===
+var S = {
+  display: '0', expression: '', prevVal: null, operator: null, resetOnNext: false,
+  mainCur: CURRENCIES[0],
+  cur1: CURRENCIES.find(function(c){ return c.code === 'USD'; }),
+  cur2: CURRENCIES.find(function(c){ return c.code === 'JPY'; }),
+  rates: {}, changes: {}, loading: true,
+  menuOpen: false, searchQ: '', menuTarget: 'main',
+  favs: JSON.parse(localStorage.getItem('currencyFavorites') || '[]')
+};
+
+// === DOM REFS ===
+var numDisp    = document.getElementById('v-num');
+var exprDisp   = document.getElementById('v-expr');
+var flagMain   = document.getElementById('v-flag-main');
+var flagC1     = document.getElementById('v-flag-c1');
+var flagC2     = document.getElementById('v-flag-c2');
+var amt1       = document.getElementById('v-amt1');
+var amt2       = document.getElementById('v-amt2');
+var backdrop   = document.getElementById('v-backdrop');
+var menuPanel  = document.getElementById('v-menu');
+var searchInput = document.getElementById('v-search');
+var curList    = document.getElementById('v-cur-list');
+var mqLoading  = document.getElementById('v-mq-loading');
+var mqScroll   = document.getElementById('v-mq-scroll');
+var mqInner    = document.getElementById('v-mq-inner');
+
+// === HELPERS ===
+function convert(amount, from, to) {
+  if (!S.rates[from] || !S.rates[to]) return 0;
+  return (amount / S.rates[from]) * S.rates[to];
+}
+function fmtAmount(n) {
+  if (n === 0) return '0.00';
+  if (n >= 1000000) return n.toFixed(0);
+  if (n >= 10000)   return n.toFixed(2);
+  if (n >= 100)     return n.toFixed(2);
+  if (n >= 1)       return n.toFixed(4);
+  return n.toFixed(6);
+}
+
+// === RENDER ===
+function renderDisplay() {
+  numDisp.textContent = S.display;
+  if (S.expression) { exprDisp.textContent = S.expression; exprDisp.style.display = 'block'; }
+  else { exprDisp.style.display = 'none'; }
+  flagMain.src = 'https://flagcdn.com/w80/' + S.mainCur.country + '.png';
+  flagMain.alt = S.mainCur.name;
+  flagC1.src = 'https://flagcdn.com/w80/' + S.cur1.country + '.png';
+  flagC1.alt = S.cur1.name;
+  flagC2.src = 'https://flagcdn.com/w80/' + S.cur2.country + '.png';
+  flagC2.alt = S.cur2.name;
+  var amount = parseFloat(S.display) || 0;
+  amt1.textContent = fmtAmount(convert(amount, S.mainCur.code, S.cur1.code));
+  amt2.textContent = fmtAmount(convert(amount, S.mainCur.code, S.cur2.code));
+}
+
+function renderMarquee() {
+  if (S.loading) { mqLoading.style.display = 'flex'; mqScroll.style.display = 'none'; return; }
+  mqLoading.style.display = 'none';
+  mqScroll.style.display = 'block';
+  var colorMap = { up: '#e64141', down: '#69b950', neutral: '#f0a023' };
+  var html = '';
+  for (var i = 0; i < MARQUEE_CURRENCIES.length; i++) {
+    var code = MARQUEE_CURRENCIES[i];
+    var rate = S.rates[code];
+    var ch   = S.changes[code];
+    var pct  = ch ? ch.pct : 0;
+    var dir  = ch ? ch.dir : 'neutral';
+    var arrow  = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '—';
+    var prefix = dir === 'up' ? '+' : dir === 'down' ? '-' : '';
+    html += '<span class="mq-item"><span class="mq-code">' + code + '</span>'
+          + '<span class="mq-rate">' + (rate ? rate.toFixed(4) : '---') + '</span>'
+          + '<span class="mq-change" style="color:' + colorMap[dir] + '">'
+          + arrow + ' ' + prefix + pct.toFixed(2) + '%</span></span>';
+  }
+  mqInner.innerHTML = html + html;
+}
+
+function renderCurrencyList() {
+  var searchLow = S.searchQ.toLowerCase();
+  var filtered = CURRENCIES.filter(function(c) {
+    return c.code.toLowerCase().indexOf(searchLow) !== -1
+        || c.name.toLowerCase().indexOf(searchLow) !== -1
+        || c.region.toLowerCase().indexOf(searchLow) !== -1;
+  }).sort(function(a, b) {
+    var aF = S.favs.indexOf(a.code) !== -1;
+    var bF = S.favs.indexOf(b.code) !== -1;
+    if (aF && !bF) return -1;
+    if (!aF && bF) return 1;
+    return 0;
+  });
+
+  curList.style.height = (filtered.length * 72) + 'px';
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var cur   = filtered[i];
+    var isFav = S.favs.indexOf(cur.code) !== -1;
+    var rate  = S.rates[cur.code];
+    var hs    = isFav ? 'fill:#ef4444; stroke:#ef4444;' : 'fill:none; stroke:rgba(255,255,255,0.3);';
+    html += '<div class="cli" data-code="' + cur.code + '" style="top:' + (i * 72) + 'px">'
+          +   '<div class="cli-click" data-code="' + cur.code + '">'
+          +     '<img class="cli-flag" src="https://flagcdn.com/w80/' + cur.country + '.png" alt="' + cur.name + '" loading="lazy"/>'
+          +     '<div class="cli-info">'
+          +       '<div class="cli-top"><span class="cli-code">' + cur.code + '</span><span class="cli-name">' + cur.name + '</span></div>'
+          +       '<div class="cli-bot"><span class="cli-region">' + cur.region + '</span>'
+          +       (rate !== undefined ? '<span class="cli-rate">• ' + rate.toFixed(4) + '</span>' : '')
+          +       '</div></div></div>'
+          +   '<button class="cli-fav" data-code="' + cur.code + '" aria-label="favourite">'
+          +     '<svg width="20" height="20" viewBox="0 0 24 24">'
+          +       '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" style="' + hs + '" stroke-width="2"/>'
+          +     '</svg>'
+          +   '</button>'
+          +   '<div class="cli-line"></div>'
+          + '</div>';
+  }
+  curList.innerHTML = html;
+
+  curList.querySelectorAll('.cli-click').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var code = el.dataset.code;
+      var cur = CURRENCIES.find(function(c){ return c.code === code; });
+      if (!cur) return;
+      if (S.menuTarget === 'main') S.mainCur = cur;
+      else if (S.menuTarget === 'cur1') S.cur1 = cur;
+      else S.cur2 = cur;
+      closeMenu();
+      renderDisplay();
+    });
+  });
+
+  curList.querySelectorAll('.cli-fav').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var code = btn.dataset.code;
+      if (S.favs.indexOf(code) !== -1) {
+        S.favs = S.favs.filter(function(f){ return f !== code; });
+      } else {
+        S.favs = S.favs.concat([code]);
+      }
+      localStorage.setItem('currencyFavorites', JSON.stringify(S.favs));
+      renderCurrencyList();
+    });
+  });
+}
+
+// === MENU ===
+function openMenu(target) {
+  S.menuTarget = target; S.menuOpen = true; S.searchQ = '';
+  searchInput.value = '';
+  backdrop.classList.add('open');
+  menuPanel.classList.add('open');
+  renderCurrencyList();
+}
+function closeMenu() {
+  S.menuOpen = false;
+  backdrop.classList.remove('open');
+  menuPanel.classList.remove('open');
+}
+
+// === CALCULATOR ===
+function calc(a, b, op) {
+  if (op === '+') return a + b;
+  if (op === '-') return a - b;
+  if (op === '×') return a * b;
+  if (op === '÷') return b !== 0 ? a / b : 0;
+  return b;
+}
+function pressNum(n) {
+  if (S.resetOnNext) { S.display = n; S.resetOnNext = false; }
+  else if (S.display === '0' && n !== '.') { S.display = n; }
+  else if (n === '.' && S.display.indexOf('.') !== -1) { return; }
+  else { S.display += n; }
+  renderDisplay();
+}
+function pressOp(op) {
+  var cur = parseFloat(S.display);
+  if (S.prevVal !== null && S.operator && !S.resetOnNext) {
+    var result = calc(S.prevVal, cur, S.operator);
+    S.prevVal = result; S.expression = result + ' ' + op; S.display = result.toString();
+  } else { S.prevVal = cur; S.expression = S.display + ' ' + op; }
+  S.operator = op; S.resetOnNext = true;
+  renderDisplay();
+}
+function pressEquals() {
+  if (S.prevVal !== null && S.operator) {
+    var cur = parseFloat(S.display);
+    var result = calc(S.prevVal, cur, S.operator);
+    S.expression = S.prevVal + ' ' + S.operator + ' ' + cur + ' =';
+    S.display = result.toString();
+    S.prevVal = null; S.operator = null; S.resetOnNext = true;
+    renderDisplay();
+  }
+}
+function pressClear() {
+  S.display = '0'; S.expression = ''; S.prevVal = null; S.operator = null; S.resetOnNext = false;
+  renderDisplay();
+}
+function pressBackspace() {
+  if (S.resetOnNext || S.display.length <= 1) { S.display = '0'; }
+  else { S.display = S.display.slice(0, -1); }
+  renderDisplay();
+}
+
+// === EXCHANGE RATES ===
+function updateRates(rates) {
+  var now = new Date();
+  var baselineRates = {};
+  var shouldUpdateBaseline = false;
+  try {
+    var sr = localStorage.getItem('baseline30MinRates');
+    var st = localStorage.getItem('baseline30MinTime');
+    if (sr && st) {
+      baselineRates = JSON.parse(sr);
+      var mins = (now.getTime() - new Date(st).getTime()) / 60000;
+      if (mins >= 30) shouldUpdateBaseline = true;
+    } else { shouldUpdateBaseline = true; }
+  } catch(e) {}
+
+  S.rates = rates; S.loading = false;
+  var changes = {};
+  var codes = Object.keys(rates);
+
+  if (Object.keys(baselineRates).length > 0) {
+    codes.forEach(function(code) {
+      if (baselineRates[code]) {
+        var pct = ((rates[code] - baselineRates[code]) / baselineRates[code]) * 100;
+        changes[code] = { pct: Math.abs(pct), dir: pct > 0.001 ? 'up' : pct < -0.001 ? 'down' : 'neutral' };
+      } else { changes[code] = { pct: 0, dir: 'neutral' }; }
+    });
+    if (shouldUpdateBaseline) {
+      try { localStorage.setItem('baseline30MinRates', JSON.stringify(rates)); localStorage.setItem('baseline30MinTime', now.toISOString()); } catch(e) {}
+    }
+  } else {
+    codes.forEach(function(code) {
+      var seed = 0;
+      for (var j = 0; j < code.length; j++) seed += code.charCodeAt(j);
+      var r1 = ((seed * 9301 + 49297) % 233280) / 233280;
+      var r2 = ((seed * 4561 + 51349) % 243000) / 243000;
+      var sim;
+      if (r1 < 0.42)      sim =  0.05 + r2 * 0.75;
+      else if (r1 < 0.84) sim = -(0.05 + r2 * 0.75);
+      else if (r1 < 0.95) sim = r1 < 0.895 ?  0.8 + r2 * 0.7 : -(0.8 + r2 * 0.7);
+      else                 sim = r1 < 0.975 ?  1.5 + r2 * 0.7 : -(1.5 + r2 * 0.7);
+      changes[code] = { pct: Math.abs(sim), dir: sim > 0.02 ? 'up' : sim < -0.02 ? 'down' : 'neutral' };
+    });
+    var baseline = {};
+    codes.forEach(function(code) {
+      var ch = changes[code];
+      var mult = ch.dir === 'up' ? 1 - ch.pct / 100 : ch.dir === 'down' ? 1 + ch.pct / 100 : 1;
+      baseline[code] = rates[code] * mult;
+    });
+    try { localStorage.setItem('baseline30MinRates', JSON.stringify(baseline)); localStorage.setItem('baseline30MinTime', now.toISOString()); } catch(e) {}
+  }
+
+  S.changes = changes;
+  try { localStorage.setItem('currentExchangeRates', JSON.stringify(rates)); localStorage.setItem('lastRateUpdate', now.toISOString()); } catch(e) {}
+  renderMarquee();
+  renderDisplay();
+}
+
+function fetchRates() {
+  S.loading = true;
+  renderMarquee();
+  fetch('https://open.er-api.com/v6/latest/TWD')
+    .then(function(r){ if (!r.ok) throw new Error(); return r.json(); })
+    .then(function(d){ if (d.result === 'success' && d.rates) { updateRates(d.rates); } else { throw new Error(); } })
+    .catch(function() {
+      fetch('https://api.frankfurter.app/latest?from=TWD')
+        .then(function(r){ if (!r.ok) throw new Error(); return r.json(); })
+        .then(function(d){ if (d.rates) { updateRates(Object.assign({ TWD: 1 }, d.rates)); } else { throw new Error(); } })
+        .catch(function() {
+          updateRates({
+            TWD:1, USD:0.032, EUR:0.030, JPY:4.56, GBP:0.026, AUD:0.049, CAD:0.045,
+            CHF:0.029, CNY:0.23, HKD:0.25, NZD:0.053, SEK:0.34, KRW:43.2, SGD:0.043,
+            NOK:0.35, MXN:0.55, INR:2.68, BRL:0.18, ZAR:0.58, RUB:3.12, TRY:1.05,
+            DKK:0.22, PLN:0.13, THB:1.15, IDR:512.5, MYR:0.14, PHP:1.84, VND:820.5,
+            AED:0.12, SAR:0.12, PKR:9.2, BDT:3.5, LKR:10.5, NPR:4.3, MMK:68.5,
+            KHR:132, LAK:680, ARS:32, CLP:30, COP:135, PEN:0.12, UYU:1.3, VES:1.1,
+            CZK:0.72, HUF:11.5, RON:0.15, BGN:0.058, UAH:1.32, ISK:4.5, QAR:0.12,
+            KWD:0.01, BHD:0.012, OMR:0.012, JOD:0.023, ILS:0.12, EGP:1.58, NGN:52,
+            KES:4.2, GHS:0.52, MAD:0.32, TND:0.1
+          });
+        });
+    });
+}
+
+function detectLocation() {
+  try {
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var cc = TIMEZONE_MAP[tz] || 'tw';
+    var cur = CURRENCIES.find(function(c){ return c.country === cc; });
+    if (cur) { S.mainCur = cur; renderDisplay(); }
+  } catch(e) {}
+}
+
+// === EVENT LISTENERS ===
+function on(id, fn) { document.getElementById(id).addEventListener('click', fn); }
+on('v-flag-main-btn', function(){ openMenu('main'); });
+on('v-cur1-btn',      function(){ openMenu('cur1'); });
+on('v-cur2-btn',      function(){ openMenu('cur2'); });
+backdrop.addEventListener('click', closeMenu);
+searchInput.addEventListener('input', function(e){ S.searchQ = e.target.value; renderCurrencyList(); });
+on('v-btn-c',   pressClear);
+on('v-btn-bs',  pressBackspace);
+on('v-btn-loc', detectLocation);
+on('v-btn-div', function(){ pressOp('÷'); });
+on('v-btn-7',   function(){ pressNum('7'); });
+on('v-btn-8',   function(){ pressNum('8'); });
+on('v-btn-9',   function(){ pressNum('9'); });
+on('v-btn-mul', function(){ pressOp('×'); });
+on('v-btn-4',   function(){ pressNum('4'); });
+on('v-btn-5',   function(){ pressNum('5'); });
+on('v-btn-6',   function(){ pressNum('6'); });
+on('v-btn-sub', function(){ pressOp('-'); });
+on('v-btn-1',   function(){ pressNum('1'); });
+on('v-btn-2',   function(){ pressNum('2'); });
+on('v-btn-3',   function(){ pressNum('3'); });
+on('v-btn-add', function(){ pressOp('+'); });
+on('v-btn-0',   function(){ pressNum('0'); });
+on('v-btn-dot', function(){ pressNum('.'); });
+on('v-btn-eq',  pressEquals);
+
+// === INIT ===
+detectLocation();
+renderDisplay();
+fetchRates();
+setInterval(fetchRates, 1800000);
+
+})(); // end IIFE
+
+</script>
+</body>
+</html>
