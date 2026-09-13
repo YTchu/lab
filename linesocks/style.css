@@ -228,3 +228,10 @@
 @font-face{font-family:"Mallory";src:local("Mallory Bold"),local("Mallory-Bold"),local("Mallory Book"),local("Mallory-Book"),local("Mallory");font-weight:700;font-style:normal}
 
 .poster-preview .preview-label,.poster-preview .preview-footer{display:none}
+
+/* Prevent mobile text inflation from changing the fixed print composition. */
+.package-text-layer,.package-text-layer *{-webkit-text-size-adjust:none;text-size-adjust:none}
+.package-text-layer{flex-shrink:0}
+.package-text-layer .package-header,.package-text-layer .package-body{flex-shrink:0}
+.package-header{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.package-header-copy{min-width:0}
