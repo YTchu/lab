@@ -256,11 +256,21 @@ function renderColors(){
 }
 document.querySelector('#minus').addEventListener('click',()=>{if(colors.length>3){if(new Set(colors.slice(0,-1)).size<2){document.querySelector('#status').textContent='每雙襪子至少保留 2 色。';return;}colors.pop();widths.pop();gaps.pop();renderColors();draw();}});
 document.querySelector('#plus').addEventListener('click',()=>{if(colors.length<12){colors.push(colors.at(-1));widths.push(widths.at(-1));gaps.push(10);renderColors();draw();}});
-document.querySelector('#export').addEventListener('click',()=>{
- moodState.note=wrapNote(document.querySelector('#mood-note').value);
- draw(true);
- const button=document.querySelector('#export');const status=document.querySelector('#status');button.disabled=true;status.textContent='正在製作 PNG…';
- try{canvas.toBlob(blob=>{button.disabled=false;if(!blob){status.textContent='匯出失敗，請再試一次。';return;}const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`line-socks-${Date.now()}.png`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='PNG 已匯出 · 1080 × 1350 px';},'image/png');draw();}catch(error){draw();button.disabled=false;status.textContent='匯出失敗，請再試一次。';}
+document.querySelector('#export').addEventListener('click',async()=>{
+ const button=document.querySelector('#export'),status=document.querySelector('#status');
+ button.disabled=true;status.textContent='正在製作 PNG…';
+ try{
+  await document.fonts.ready;
+  moodState.note=wrapNote(document.querySelector('#mood-note').value);
+  // Freeze the complete artwork before restoring the interactive preview.
+  draw(true);
+  const snapshot=document.createElement('canvas');snapshot.width=1080;snapshot.height=1350;
+  snapshot.getContext('2d').drawImage(canvas,0,0);draw();
+  const blob=await new Promise((resolve,reject)=>snapshot.toBlob(value=>value?resolve(value):reject(new Error('PNG unavailable')),'image/png'));
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`line-socks-${Date.now()}.png`;document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='PNG 已匯出 · 1080 × 1350 px';
+ }catch(error){draw();status.textContent='匯出失敗，請再試一次。';}
+ finally{button.disabled=false;}
 });
 renderColors();draw();
 
@@ -359,10 +369,16 @@ function renderHtmlPackageText(){
 
 // Export the actual HTML line boxes, including wrapping and CSS spacing.
 function paintPackageHtml(){
- const reference=canvas.getBoundingClientRect(),ratio=1080/reference.width;
+ // Measure a full-size print surface, independent of mobile CSS zoom and rounding.
+ const printLayer=packageTextLayer.cloneNode(true);printLayer.removeAttribute('id');
+ printLayer.hidden=false;printLayer.setAttribute('aria-hidden','true');
+ Object.assign(printLayer.style,{zoom:'1',position:'fixed',left:'-12000px',top:'0',visibility:'hidden',width:'1080px',height:'1350px'});
+ document.body.append(printLayer);
+ try{
+ const reference=printLayer.getBoundingClientRect(),ratio=1080/reference.width;
  const box=element=>{const r=element.getBoundingClientRect();return {x:(r.left-reference.left)*ratio,y:(r.top-reference.top)*ratio,width:r.width*ratio,height:r.height*ratio};};
  ctx.save();ctx.beginPath();ctx.rect(0,0,1080,1350);ctx.clip();
- for(const element of packageTextLayer.querySelectorAll('[data-text-key]')){
+ for(const element of printLayer.querySelectorAll('[data-text-key]')){
   if(!element.textContent)continue;
   const style=getComputedStyle(element),size=parseFloat(style.fontSize),lineHeight=parseFloat(style.lineHeight)||size*1.2;
   ctx.font=`${style.fontWeight} ${size}px ${style.fontFamily}`;ctx.fillStyle=style.color;ctx.textAlign='left';
@@ -381,14 +397,15 @@ function paintPackageHtml(){
   }
   for(const line of lines)ctx.fillText(line.text,line.x,line.y+(line.height-ascent-descent)/2+ascent);
  }
- for(const element of packageTextLayer.querySelectorAll('.package-rule')){
+ for(const element of printLayer.querySelectorAll('.package-rule')){
   const r=box(element);ctx.fillStyle=sceneColors.ink;ctx.fillRect(r.x,r.y,r.width,Math.max(1,r.height));
  }
- for(const element of packageTextLayer.querySelectorAll('.package-status-icon')){
+ for(const element of printLayer.querySelectorAll('.package-status-icon')){
   const r=box(element),i=Number(element.parentElement.dataset.statusIndex);
   ctx.strokeStyle=sceneColors.ink;ctx.lineWidth=2;ctx.beginPath();ctx.arc(r.x+r.width/2,r.y+r.height/2,packageRingSizes[i]/2,0,Math.PI*2);ctx.stroke();drawIcon(element.dataset.icon,r.x+r.width/2,r.y+r.height/2,packageIconSizes[i]);
  }
  ctx.restore();
+ }finally{printLayer.remove();}
 }
 
 new ResizeObserver(()=>{packageTextLayer.style.zoom=String(canvas.getBoundingClientRect().width/1080);}).observe(canvas);
