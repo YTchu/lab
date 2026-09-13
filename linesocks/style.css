@@ -235,3 +235,13 @@
 .package-text-layer .package-header,.package-text-layer .package-body{flex-shrink:0}
 .package-header{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .package-header-copy{min-width:0}
+
+html[data-sock-drag="disabled"] #preview{cursor:default}
+
+ .sock-mini{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:90;width:40vw;max-width:240px;overflow:hidden;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;box-shadow:0 4px 20px #0002;pointer-events:none}
+.sock-mini[hidden]{display:none}
+#sock-mini-canvas{display:block;width:100%;height:auto}
+
+.sock-mini{opacity:0;visibility:hidden;transform:translateY(calc(-100% - max(12px, env(safe-area-inset-top)) - 12px));transition:opacity 640ms cubic-bezier(.22,1,.36,1),transform 640ms cubic-bezier(.22,1,.36,1),visibility 0s linear 640ms}
+.sock-mini.is-visible{opacity:1;visibility:visible;transform:translateY(0);transition-delay:0s}
+@media(prefers-reduced-motion:reduce){.sock-mini,.sock-mini.is-visible{transition:none;transform:none}}

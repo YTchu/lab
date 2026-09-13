@@ -112,7 +112,8 @@ let paletteChoice=0,paletteScenarioKey='';
 // Vector artwork is rendered at the exact export resolution; no external assets required.
 // Shorter, wider crew silhouette with a rounded toe and fuller heel, matched to the reference.
 const outline = new Path2D('M 12 0 Q 0 0 0 13 L 0 455 Q 0 481 -30 503 L -242 657 Q -306 704 -276 762 Q -252 810 -198 832 Q -150 852 -103 821 L 101 663 Q 127 645 164 637 Q 226 625 228 582 Q 231 558 213 517 Q 200 488 200 453 L 200 13 Q 200 0 188 0 Z');
-function sock(x,y,front){
+function sock(x,y,front,paint=ctx){
+ const ctx=paint;
  const dark=sockBase==='black';
  ctx.save();ctx.translate(x,y);ctx.scale(1.28,1.28);
  // CSS is the source of truth; Canvas mirrors it for identical PNG export.
@@ -228,6 +229,7 @@ function draw(forExport=false){
  canvas.closest('.preview-section').classList.toggle('poster-preview',!showPackaging);
  renderHtmlPackageText();
  if(forExport&&showPackaging)paintPackageHtml();
+ drawSockThumbnail();
 }
 document.querySelector('#packaging').addEventListener('change',event=>{showPackaging=event.target.checked;draw();});
 function makeSlider(text, id, value, min, max, update, isGap=false){
@@ -309,21 +311,22 @@ function buildDeveloperPanel(){
  packageTextEntries.forEach((entry,key)=>add(fontControls,names[key]||entry.label,packageTextSizes[key]??entry.size,6,96,value=>{packageTextSizes[key]=value;}));
  ['當日天氣','天色','心情狀態','念頭'].forEach((label,i)=>{add(iconControls,label+'圖示',packageIconSizes[i],16,96,value=>{packageIconSizes[i]=value;});add(iconControls,label+'外圈直徑',packageRingSizes[i],32,120,value=>{packageRingSizes[i]=value;});});
 }
-document.querySelector('#developer-panel').addEventListener('toggle',event=>{if(event.target.open){buildDeveloperPanel();}});
-document.querySelector('#reset-package-sizes').addEventListener('click',()=>{for(const key of Object.keys(packageTextSizes))delete packageTextSizes[key];packageIconSizes.fill(39);packageRingSizes.fill(68);draw();buildDeveloperPanel();});
+document.querySelector('#developer-panel')?.addEventListener('toggle',event=>{if(event.target.open){buildDeveloperPanel();}});
+document.querySelector('#reset-package-sizes')?.addEventListener('click',()=>{for(const key of Object.keys(packageTextSizes))delete packageTextSizes[key];packageIconSizes.fill(39);packageRingSizes.fill(68);draw();buildDeveloperPanel();});
 
-document.querySelector('#package-font').addEventListener('change',async event=>{
- const family=event.target.value,select=event.target,status=document.querySelector('#font-status');select.disabled=true;document.querySelector('#export').disabled=true;status.textContent='字型載入中…';
+document.querySelector('#package-font')?.addEventListener('change',event=>loadPackageFont(event.target.value));
+async function loadPackageFont(family){
+ const select=document.querySelector('#package-font')||{},status=document.querySelector('#font-status')||{};select.disabled=true;document.querySelector('#export').disabled=true;status.textContent='字型載入中…';
  try{if(family!=='Arial'){
  if(family!=='Mallory')await new Promise((resolve,reject)=>{const link=document.createElement('link');link.rel='stylesheet';link.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(family)+':wght@400;700&display=swap';const timer=setTimeout(()=>reject(new Error('timeout')),12000);link.onload=()=>{clearTimeout(timer);resolve();};link.onerror=()=>{clearTimeout(timer);reject(new Error('font'));};document.head.append(link);});
  const loaded=await Promise.race([Promise.all([document.fonts.load(`400 16px "${family}"`),document.fonts.load(`700 16px "${family}"`)]),new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),12000))]);if(loaded.some(fonts=>!fonts.length))throw new Error('font');
  }packageFont=family;moodState.note=wrapNote(document.querySelector('#mood-note').value);status.textContent=family==='Arial'?'使用系統字型':family==='Mallory'?'Mallory 本機字型已載入':'Google Fonts 已載入';draw();
  }catch(error){select.value=packageFont;status.textContent=family==='Mallory'?'未找到 Mallory 本機字型，請先安裝字型，或提供字型檔以加入專案。已保留原字型。':'無法載入字型，保留原字型。請確認網路連線。';}finally{select.disabled=false;document.querySelector('#export').disabled=false;}
-});
+}
 
 const sockAxisControls=[['bag-sock-scale','scale','%'],['bag-sock-x','x',' px'],['bag-sock-y','y',' px']];
-for(const [id,key,unit] of sockAxisControls){const input=document.querySelector('#'+id);input.addEventListener('input',()=>{bagSockTransform[key]=Number(input.value);document.querySelector('#'+id+'-value').value=input.value+unit;draw();});}
-document.querySelector('#reset-bag-socks').addEventListener('click',()=>{Object.assign(bagSockTransform,{scale:100,x:0,y:0});for(const [id,key,unit] of sockAxisControls){document.querySelector('#'+id).value=bagSockTransform[key];document.querySelector('#'+id+'-value').value=bagSockTransform[key]+unit;}draw();});
+for(const [id,key,unit] of sockAxisControls){const input=document.querySelector('#'+id);if(!input)continue;input.addEventListener('input',()=>{bagSockTransform[key]=Number(input.value);document.querySelector('#'+id+'-value').value=input.value+unit;draw();});}
+document.querySelector('#reset-bag-socks')?.addEventListener('click',()=>{Object.assign(bagSockTransform,{scale:100,x:0,y:0});for(const [id,key,unit] of sockAxisControls){document.querySelector('#'+id).value=bagSockTransform[key];document.querySelector('#'+id+'-value').value=bagSockTransform[key]+unit;}draw();});
 
 const scenePalettes=[
  ['background','預覽背景',['#a8a8a8','#F5F5F5','#D6D3CC','#202020','#C4D6DD','#E8CFD3']],
@@ -410,8 +413,9 @@ function paintPackageHtml(){
 
 new ResizeObserver(()=>{packageTextLayer.style.zoom=String(canvas.getBoundingClientRect().width/1080);}).observe(canvas);
 
-function syncSockAxes(){for(const [id,key,unit] of sockAxisControls){document.querySelector('#'+id).value=bagSockTransform[key];document.querySelector('#'+id+'-value').value=bagSockTransform[key]+unit;}}
+function syncSockAxes(){for(const [id,key,unit] of sockAxisControls){if(!document.querySelector('#'+id))continue;document.querySelector('#'+id).value=bagSockTransform[key];document.querySelector('#'+id+'-value').value=bagSockTransform[key]+unit;}}
 let sockDrag=null;
+if(document.documentElement.dataset.sockDrag!=='disabled'){
 canvas.addEventListener('pointerdown',event=>{
  if(!showPackaging||event.button!==0||event.pointerType==='touch')return;
  const rect=canvas.getBoundingClientRect(),x=(event.clientX-rect.left)*1080/rect.width,y=(event.clientY-rect.top)*1350/rect.height;
@@ -421,6 +425,7 @@ canvas.addEventListener('pointerdown',event=>{
 canvas.addEventListener('pointermove',event=>{if(!sockDrag||event.pointerId!==sockDrag.id)return;bagSockTransform.x=Math.max(-600,Math.min(600,Math.round(sockDrag.startX+(event.clientX-sockDrag.x)*sockDrag.ratio)));bagSockTransform.y=Math.max(-800,Math.min(800,Math.round(sockDrag.startY+(event.clientY-sockDrag.y)*sockDrag.ratio)));syncSockAxes();draw();});
 const stopSockDrag=()=>{sockDrag=null;canvas.classList.remove('dragging-socks');};
 canvas.addEventListener('pointerup',stopSockDrag);canvas.addEventListener('pointercancel',stopSockDrag);canvas.addEventListener('lostpointercapture',stopSockDrag);
+}
 
 // A JSON data block inside the HTML is the portable source for developer defaults.
 const savedBlock=document.querySelector('#saved-developer-settings');
@@ -430,10 +435,10 @@ if(savedBlock){try{
  for(const [key,value] of Object.entries(saved.textSizes||{}))if(/^\d+$/.test(key))packageTextSizes[key]=bounded(value,6,96,16);
  for(let i=0;i<4;i++){packageIconSizes[i]=bounded(saved.iconSizes?.[i],16,96,39);packageRingSizes[i]=bounded(saved.ringSizes?.[i],32,120,68);}
  bagSockTransform.scale=bounded(saved.socks?.scale,25,400,100);bagSockTransform.x=bounded(saved.socks?.x,-600,600,0);bagSockTransform.y=bounded(saved.socks?.y,-800,800,0);syncSockAxes();draw();
- const fontSelect=document.querySelector('#package-font');if([...fontSelect.options].some(option=>option.value===saved.font)){fontSelect.value=saved.font;fontSelect.dispatchEvent(new Event('change'));}
-}catch(error){document.querySelector('#save-html-status').textContent='已儲存設定無法讀取，使用預設值。';}}
+ const fontSelect=document.querySelector('#package-font');if(['Arial','Inter','Roboto','Roboto Condensed','Montserrat','Oswald','Noto Sans TC','Mallory'].includes(saved.font)){if(fontSelect)fontSelect.value=saved.font;loadPackageFont(saved.font);}
+}catch(error){const status=document.querySelector('#save-html-status');if(status)status.textContent='已儲存設定無法讀取，使用預設值。';}}
 
-document.querySelector('#save-html-settings').addEventListener('click',async()=>{
+document.querySelector('#save-html-settings')?.addEventListener('click',async()=>{
  const status=document.querySelector('#save-html-status');
  const settings={version:1,textSizes:packageTextSizes,iconSizes:packageIconSizes,ringSizes:packageRingSizes,font:packageFont,socks:bagSockTransform};
  const clone=document.documentElement.cloneNode(true);
@@ -641,3 +646,29 @@ function drawPosterBacking(){
  ctx.font=`400 22px ${family}`;ctx.fillText('WALK WITH YOU THROUGH EVERY STEP',540,1273);
  ctx.restore();
 }
+
+function drawSockThumbnail(){
+ const mini=document.querySelector('#sock-mini-canvas');if(!mini||mini.hidden)return;
+ const paint=mini.getContext('2d');paint.clearRect(0,0,mini.width,mini.height);
+ paint.fillStyle=sceneColors.background;paint.fillRect(0,0,mini.width,mini.height);
+ paint.save();paint.translate(152,30);paint.scale(.38,.38);sock(0,0,true,paint);paint.restore();
+}
+// Reveal only once the weather section reaches the top of the viewport.
+function syncSockThumbnailVisibility(){
+ const panel=document.querySelector('.sock-mini'),weather=document.querySelector('[aria-labelledby="weather-title"]');
+ if(!panel||!weather)return;
+ const visible=weather.getBoundingClientRect().top<=0;
+ if(panel.classList.contains('is-visible')!==visible){
+  if(visible)drawSockThumbnail();
+  panel.classList.toggle('is-visible',visible);panel.setAttribute('aria-hidden',String(!visible));
+ }
+}
+let thumbnailScrollPending=false;
+window.addEventListener('scroll',()=>{
+ if(thumbnailScrollPending)return;thumbnailScrollPending=true;
+ requestAnimationFrame(()=>{thumbnailScrollPending=false;syncSockThumbnailVisibility();});
+},{passive:true});
+window.addEventListener('resize',syncSockThumbnailVisibility);
+window.addEventListener('pageshow',syncSockThumbnailVisibility);
+new ResizeObserver(syncSockThumbnailVisibility).observe(document.querySelector('.app'));
+syncSockThumbnailVisibility();
