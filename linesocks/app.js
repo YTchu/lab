@@ -456,6 +456,12 @@ function paintPackageHtml(){
  for(const element of printLayer.querySelectorAll('.package-rule')){
   const r=box(element);ctx.fillStyle=sceneColors.ink;ctx.fillRect(r.x,r.y,r.width,Math.max(1,r.height));
  }
+ // Use the supplied vector outline and the same measured position as the preview.
+ for(const element of printLayer.querySelectorAll('.package-sock-icon')){
+  const r=box(element);ctx.save();ctx.translate(r.x,r.y);ctx.scale(r.width/40,r.height/68);ctx.fillStyle=sceneColors.ink;
+  for(const path of element.querySelectorAll('path'))ctx.fill(new Path2D(path.getAttribute('d')),path.getAttribute('fill-rule')||'nonzero');
+  ctx.restore();
+ }
  for(const element of printLayer.querySelectorAll('.package-status-icon')){
   const r=box(element),i=Number(element.parentElement.dataset.statusIndex);
   ctx.strokeStyle=sceneColors.ink;ctx.lineWidth=2;ctx.beginPath();ctx.arc(r.x+r.width/2,r.y+r.height/2,packageRingSizes[i]/2,0,Math.PI*2);ctx.stroke();drawIcon(element.dataset.icon,r.x+r.width/2,r.y+r.height/2,packageIconSizes[i]);

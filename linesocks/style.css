@@ -292,3 +292,8 @@ html[data-sock-drag="disabled"] #preview{cursor:default}
 .export-actions #export,.export-actions #share-preview{white-space:normal}
 @media(max-width:520px){.stripe-settings h3{flex-wrap:wrap}.activity-result{min-width:0;overflow-wrap:anywhere}.control-title{line-height:1.5}}
 @media(max-width:520px){.sock-base-inline{flex-wrap:wrap}.sock-base-inline>.sock-base-options{min-width:0;flex-wrap:wrap;gap:12px}.sock-base-inline>#sock-base-label{width:100%;flex-basis:100%}}
+
+/* Sock signature aligned with the bottom-right packaging caption. */
+.package-footer-mark{position:relative;width:100%;margin-top:4px}
+.package-footer-mark .package-footer-copy{margin-top:0;max-width:calc(100% - 48px)}
+.package-footer-mark .package-sock-icon{position:absolute;right:0;top:50%;width:40px;height:68px;transform:translateY(-50%);fill:currentColor}
