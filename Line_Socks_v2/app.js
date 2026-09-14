@@ -268,7 +268,17 @@ async function createPreviewPNG(height=1350){
   draw(true);
   const snapshotContext=snapshot.getContext('2d');
   snapshotContext.fillStyle=sceneColors.background;snapshotContext.fillRect(0,0,1080,height);
-  snapshotContext.drawImage(canvas,0,(height-1350)/2);
+  if(height===1350){
+   // Include the visible CSS padding, scaled with the complete preview to fit 4:5.
+   const previewStyle=getComputedStyle(canvas.closest('.preview-section'));
+   const previewWidth=canvas.getBoundingClientRect().width||1080;
+   const top=(parseFloat(previewStyle.paddingTop)||0)*1080/previewWidth;
+   const bottom=(parseFloat(previewStyle.paddingBottom)||0)*1080/previewWidth;
+   const scale=height/(1350+top+bottom);
+   snapshotContext.drawImage(canvas,(1080-1080*scale)/2,top*scale,1080*scale,1350*scale);
+  }else{
+   snapshotContext.drawImage(canvas,0,(height-1350)/2);
+  }
  }finally{draw();}
  return new Promise((resolve,reject)=>snapshot.toBlob(value=>value?resolve(value):reject(new Error('PNG unavailable')),'image/png'));
 }
