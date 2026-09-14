@@ -226,6 +226,7 @@ function draw(forExport=false){
  }
  sock(444,50,false);sock(512,138,true);ctx.restore();
  if(showPackaging) drawPackaging();else drawPosterBacking();
+ canvas.closest('.preview-section').style.backgroundColor=sceneColors.background;
  canvas.closest('.preview-section').classList.toggle('poster-preview',!showPackaging);
  renderHtmlPackageText();
  if(forExport&&showPackaging)paintPackageHtml();
@@ -258,22 +259,58 @@ function renderColors(){
 }
 document.querySelector('#minus').addEventListener('click',()=>{if(colors.length>3){if(new Set(colors.slice(0,-1)).size<2){document.querySelector('#status').textContent='每雙襪子至少保留 2 色。';return;}colors.pop();widths.pop();gaps.pop();renderColors();draw();}});
 document.querySelector('#plus').addEventListener('click',()=>{if(colors.length<12){colors.push(colors.at(-1));widths.push(widths.at(-1));gaps.push(10);renderColors();draw();}});
-document.querySelector('#export').addEventListener('click',async()=>{
- const button=document.querySelector('#export'),status=document.querySelector('#status');
- button.disabled=true;status.textContent='正在製作 PNG…';
+async function createPreviewPNG(height=1350){
+ await document.fonts.ready;
+ moodState.note=wrapNote(document.querySelector('#mood-note').value);
+ // Freeze the complete artwork before restoring the interactive preview.
+ const snapshot=document.createElement('canvas');snapshot.width=1080;snapshot.height=height;
  try{
-  await document.fonts.ready;
-  moodState.note=wrapNote(document.querySelector('#mood-note').value);
-  // Freeze the complete artwork before restoring the interactive preview.
   draw(true);
-  const snapshot=document.createElement('canvas');snapshot.width=1080;snapshot.height=1350;
-  snapshot.getContext('2d').drawImage(canvas,0,0);draw();
-  const blob=await new Promise((resolve,reject)=>snapshot.toBlob(value=>value?resolve(value):reject(new Error('PNG unavailable')),'image/png'));
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`line-socks-${Date.now()}.png`;document.body.append(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='PNG 已匯出 · 1080 × 1350 px';
- }catch(error){draw();status.textContent='匯出失敗，請再試一次。';}
- finally{button.disabled=false;}
-});
+  const snapshotContext=snapshot.getContext('2d');
+  snapshotContext.fillStyle=sceneColors.background;snapshotContext.fillRect(0,0,1080,height);
+  if(height===1350){
+   // Include the visible CSS padding, scaled with the complete preview to fit 4:5.
+   const previewStyle=getComputedStyle(canvas.closest('.preview-section'));
+   const previewWidth=canvas.getBoundingClientRect().width||1080;
+   const top=(parseFloat(previewStyle.paddingTop)||0)*1080/previewWidth;
+   const bottom=(parseFloat(previewStyle.paddingBottom)||0)*1080/previewWidth;
+   const scale=height/(1350+top+bottom);
+   snapshotContext.drawImage(canvas,(1080-1080*scale)/2,top*scale,1080*scale,1350*scale);
+  }else{
+   snapshotContext.drawImage(canvas,0,(height-1350)/2);
+  }
+ }finally{draw();}
+ return new Promise((resolve,reject)=>snapshot.toBlob(value=>value?resolve(value):reject(new Error('PNG unavailable')),'image/png'));
+}
+function downloadPreviewPNG(blob){
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=`line-socks-${Date.now()}.png`;document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+async function savePreview(share=false){
+ const buttons=[...document.querySelectorAll('#export,#share-preview,input[name="export-size"]')],status=document.querySelector('#status');
+ const height=document.querySelector('input[name="export-size"]:checked')?.value==='1920'?1920:1350;
+ buttons.forEach(button=>button.disabled=true);status.textContent='正在製作 PNG…';
+ try{
+  const blob=await createPreviewPNG(height);
+  if(share){
+   const file=new File([blob],`line-socks-${Date.now()}.png`,{type:'image/png'});
+   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+     await navigator.share({files:[file],title:'我的 LINE SOCKS 樣稿'});
+     status.textContent='已交由系統分享。';return;
+    }catch(error){
+     if(error.name==='AbortError'){status.textContent='已取消分享。';return;}
+     downloadPreviewPNG(blob);status.textContent='無法開啟系統分享，已下載 PNG，請手動分享圖片。';return;
+    }
+   }
+   downloadPreviewPNG(blob);status.textContent='此瀏覽器不支援圖片分享，已下載 PNG，請手動分享圖片。';
+  }else{downloadPreviewPNG(blob);status.textContent=`PNG 已匯出 · 1080 × ${height} px`;}
+ }catch(error){status.textContent=share?'分享失敗，請再試一次。':'匯出失敗，請再試一次。';}
+ finally{buttons.forEach(button=>button.disabled=false);}
+}
+document.querySelector('#export').addEventListener('click',()=>savePreview());
+document.querySelector('#share-preview')?.addEventListener('click',()=>savePreview(true));
 renderColors();draw();
 
 function wrapNote(value){
