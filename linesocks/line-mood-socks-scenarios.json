@@ -95,15 +95,15 @@
   "actionCatalog": {
     "walk": {
       "label": "散步",
-      "lucideIcon": "footprints"
+      "lucideIcon": "park"
     },
     "short_walk": {
       "label": "短暫散步",
-      "lucideIcon": "footprints"
+      "lucideIcon": "park"
     },
     "outing": {
       "label": "踏青",
-      "lucideIcon": "trees"
+      "lucideIcon": "mountain-snow"
     },
     "bike": {
       "label": "腳踏車",
@@ -111,11 +111,11 @@
     },
     "zoo": {
       "label": "動物園",
-      "lucideIcon": "paw-print"
+      "lucideIcon": "panda"
     },
     "seaside": {
       "label": "海邊",
-      "lucideIcon": "waves"
+      "lucideIcon": "waves-horizontal"
     },
     "camera": {
       "label": "拍照",
@@ -131,11 +131,11 @@
     },
     "movie": {
       "label": "電影",
-      "lucideIcon": "clapperboard"
+      "lucideIcon": "popcorn"
     },
     "camping": {
       "label": "露營",
-      "lucideIcon": "tent-tree"
+      "lucideIcon": "flame-kindling"
     },
     "cafe": {
       "label": "咖啡館",
@@ -147,11 +147,11 @@
     },
     "tea": {
       "label": "熱茶",
-      "lucideIcon": "cup-soda"
+      "lucideIcon": "leaf"
     },
     "music": {
       "label": "音樂",
-      "lucideIcon": "headphones"
+      "lucideIcon": "music-4"
     },
     "snack": {
       "label": "零食",
@@ -173,13 +173,13 @@
       "label": "早午餐",
       "lucideIcon": "utensils"
     },
-    "bakery": {
-      "label": "麵包",
-      "lucideIcon": "croissant"
+    "hamburger": {
+      "label": "漢堡",
+      "lucideIcon": "hamburger"
     },
     "icecream": {
       "label": "冰淇淋",
-      "lucideIcon": "ice-cream-bowl"
+      "lucideIcon": "ice-cream-cone"
     },
     "book": {
       "label": "書本",
@@ -207,7 +207,7 @@
     },
     "aroma": {
       "label": "香氛",
-      "lucideIcon": "flame-kindling"
+      "lucideIcon": "flame"
     },
     "headphones": {
       "label": "耳機",
@@ -219,7 +219,7 @@
     },
     "rest": {
       "label": "休息",
-      "lucideIcon": "pause"
+      "lucideIcon": "rocking-chair"
     },
     "charge": {
       "label": "充電",
@@ -231,7 +231,7 @@
     },
     "checklist": {
       "label": "整理清單",
-      "lucideIcon": "list-checks"
+      "lucideIcon": "layout-list"
     },
     "note": {
       "label": "筆記",
@@ -247,7 +247,7 @@
     },
     "run": {
       "label": "跑步",
-      "lucideIcon": "person-standing"
+      "lucideIcon": "sport-shoe"
     },
     "cold_drink": {
       "label": "喝冷飲",
@@ -259,7 +259,27 @@
     },
     "tissue": {
       "label": "擦擦眼淚",
-      "lucideIcon": "heart-handshake"
+      "lucideIcon": "droplets"
+    },
+    "board_game": {
+      "label": "桌遊",
+      "lucideIcon": "playing-cards-fan"
+    },
+    "puzzle": {
+      "label": "拼圖",
+      "lucideIcon": "puzzle"
+    },
+    "cleaning": {
+      "label": "打掃",
+      "lucideIcon": "broom-sparkles"
+    },
+    "drawing": {
+      "label": "畫畫",
+      "lucideIcon": "palette"
+    },
+    "exhibition": {
+      "label": "展覽",
+      "lucideIcon": "landmark"
     }
   },
   "scenarios": [
@@ -273,7 +293,9 @@
         "walk",
         "outing",
         "bike",
-        "zoo"
+        "zoo",
+        "cleaning",
+        "exhibition"
       ]
     },
     {
@@ -299,7 +321,8 @@
         "stargazing",
         "dessert",
         "movie",
-        "camping"
+        "camping",
+        "board_game"
       ]
     },
     {
@@ -312,7 +335,9 @@
         "zoo",
         "outing",
         "cafe",
-        "bakery"
+        "hamburger",
+        "cleaning",
+        "exhibition"
       ]
     },
     {
@@ -338,7 +363,8 @@
         "music",
         "movie",
         "dessert",
-        "dinner"
+        "dinner",
+        "board_game"
       ]
     },
     {
@@ -351,7 +377,10 @@
         "cafe",
         "dessert",
         "ramen",
-        "book"
+        "book",
+        "board_game",
+        "cleaning",
+        "exhibition"
       ]
     },
     {
@@ -364,7 +393,8 @@
         "music",
         "hotpot",
         "dessert",
-        "movie"
+        "movie",
+        "board_game"
       ]
     },
     {
@@ -377,7 +407,8 @@
         "movie",
         "snack",
         "hotpot",
-        "music"
+        "music",
+        "board_game"
       ]
     },
     {
@@ -390,7 +421,9 @@
         "bike",
         "outing",
         "walk",
-        "seaside"
+        "seaside",
+        "cleaning",
+        "exhibition"
       ]
     },
     {
@@ -416,7 +449,8 @@
         "music",
         "walk",
         "dessert",
-        "stargazing"
+        "stargazing",
+        "board_game"
       ]
     },
     {
@@ -429,7 +463,9 @@
         "game",
         "movie",
         "dessert",
-        "book"
+        "book",
+        "board_game",
+        "cleaning"
       ]
     },
     {
@@ -442,7 +478,8 @@
         "movie",
         "hotpot",
         "snack",
-        "game"
+        "game",
+        "board_game"
       ]
     },
     {
@@ -455,7 +492,8 @@
         "snack",
         "movie",
         "music",
-        "sleep"
+        "sleep",
+        "board_game"
       ]
     },
     {
@@ -468,7 +506,10 @@
         "book",
         "outing",
         "walk",
-        "zoo"
+        "zoo",
+        "cleaning",
+        "drawing",
+        "exhibition"
       ]
     },
     {
@@ -481,7 +522,8 @@
         "tea",
         "seaside",
         "walk",
-        "camera"
+        "camera",
+        "drawing"
       ]
     },
     {
@@ -494,7 +536,8 @@
         "stargazing",
         "book",
         "tea",
-        "camping"
+        "camping",
+        "puzzle"
       ]
     },
     {
@@ -507,7 +550,11 @@
         "book",
         "cafe",
         "outing",
-        "bakery"
+        "hamburger",
+        "puzzle",
+        "cleaning",
+        "drawing",
+        "exhibition"
       ]
     },
     {
@@ -520,7 +567,9 @@
         "tea",
         "walk",
         "dessert",
-        "journal"
+        "journal",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -533,7 +582,8 @@
         "aroma",
         "book",
         "music",
-        "sleep"
+        "sleep",
+        "puzzle"
       ]
     },
     {
@@ -545,8 +595,12 @@
       "activityOptions": [
         "coffee",
         "book",
-        "bakery",
-        "journal"
+        "hamburger",
+        "journal",
+        "puzzle",
+        "cleaning",
+        "drawing",
+        "exhibition"
       ]
     },
     {
@@ -559,7 +613,9 @@
         "music",
         "tea",
         "dessert",
-        "journal"
+        "journal",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -572,7 +628,8 @@
         "sleep",
         "music",
         "book",
-        "aroma"
+        "aroma",
+        "puzzle"
       ]
     },
     {
@@ -585,7 +642,10 @@
         "walk",
         "bike",
         "outing",
-        "seaside"
+        "seaside",
+        "cleaning",
+        "drawing",
+        "exhibition"
       ]
     },
     {
@@ -598,7 +658,8 @@
         "walk",
         "seaside",
         "camera",
-        "tea"
+        "tea",
+        "drawing"
       ]
     },
     {
@@ -611,7 +672,8 @@
         "music",
         "walk",
         "stargazing",
-        "book"
+        "book",
+        "puzzle"
       ]
     },
     {
@@ -624,7 +686,10 @@
         "headphones",
         "book",
         "tea",
-        "journal"
+        "journal",
+        "puzzle",
+        "cleaning",
+        "drawing"
       ]
     },
     {
@@ -637,7 +702,9 @@
         "tea",
         "book",
         "dessert",
-        "aroma"
+        "aroma",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -650,7 +717,8 @@
         "blanket",
         "book",
         "sleep",
-        "music"
+        "music",
+        "puzzle"
       ]
     },
     {
@@ -701,7 +769,7 @@
       "activityOptions": [
         "coffee",
         "brunch",
-        "bakery",
+        "hamburger",
         "cafe"
       ]
     },
@@ -858,7 +926,8 @@
         "walk",
         "outing",
         "zoo",
-        "dessert"
+        "dessert",
+        "drawing"
       ]
     },
     {
@@ -871,7 +940,8 @@
         "bench",
         "seaside",
         "journal",
-        "dessert"
+        "dessert",
+        "drawing"
       ]
     },
     {
@@ -897,7 +967,8 @@
         "coffee",
         "book",
         "journal",
-        "bakery"
+        "hamburger",
+        "drawing"
       ]
     },
     {
@@ -910,7 +981,8 @@
         "music",
         "dessert",
         "journal",
-        "walk"
+        "walk",
+        "drawing"
       ]
     },
     {
@@ -936,7 +1008,8 @@
         "coffee",
         "dessert",
         "journal",
-        "book"
+        "book",
+        "drawing"
       ]
     },
     {
@@ -949,7 +1022,8 @@
         "music",
         "hotpot",
         "journal",
-        "tea"
+        "tea",
+        "drawing"
       ]
     },
     {
@@ -975,7 +1049,8 @@
         "walk",
         "seaside",
         "outing",
-        "bike"
+        "bike",
+        "drawing"
       ]
     },
     {
@@ -988,7 +1063,8 @@
         "seaside",
         "walk",
         "journal",
-        "tea"
+        "tea",
+        "drawing"
       ]
     },
     {
@@ -1014,7 +1090,8 @@
         "headphones",
         "book",
         "journal",
-        "dessert"
+        "dessert",
+        "drawing"
       ]
     },
     {
@@ -1027,7 +1104,8 @@
         "home",
         "hotpot",
         "book",
-        "blanket"
+        "blanket",
+        "drawing"
       ]
     },
     {
@@ -1053,7 +1131,8 @@
         "checklist",
         "walk",
         "bike",
-        "cafe"
+        "cafe",
+        "drawing"
       ]
     },
     {
@@ -1066,7 +1145,8 @@
         "note",
         "walk",
         "seaside",
-        "dessert"
+        "dessert",
+        "drawing"
       ]
     },
     {
@@ -1079,7 +1159,8 @@
         "journal",
         "book",
         "tea",
-        "sleep"
+        "sleep",
+        "puzzle"
       ]
     },
     {
@@ -1092,7 +1173,9 @@
         "checklist",
         "coffee",
         "short_walk",
-        "book"
+        "book",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -1105,7 +1188,9 @@
         "walk",
         "journal",
         "dessert",
-        "tea"
+        "tea",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -1118,7 +1203,8 @@
         "breathing",
         "book",
         "music",
-        "sleep"
+        "sleep",
+        "puzzle"
       ]
     },
     {
@@ -1131,7 +1217,9 @@
         "checklist",
         "coffee",
         "journal",
-        "ramen"
+        "ramen",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -1144,7 +1232,9 @@
         "music",
         "journal",
         "tea",
-        "dessert"
+        "dessert",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -1157,7 +1247,8 @@
         "sleep",
         "book",
         "music",
-        "breathing"
+        "breathing",
+        "puzzle"
       ]
     },
     {
@@ -1170,7 +1261,8 @@
         "walk",
         "bike",
         "breathing",
-        "cafe"
+        "cafe",
+        "drawing"
       ]
     },
     {
@@ -1183,7 +1275,8 @@
         "breathing",
         "walk",
         "seaside",
-        "journal"
+        "journal",
+        "drawing"
       ]
     },
     {
@@ -1196,7 +1289,8 @@
         "shutdown",
         "book",
         "sleep",
-        "music"
+        "music",
+        "puzzle"
       ]
     },
     {
@@ -1209,7 +1303,9 @@
         "checklist",
         "headphones",
         "journal",
-        "book"
+        "book",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -1222,7 +1318,9 @@
         "shutdown",
         "hotpot",
         "book",
-        "tea"
+        "tea",
+        "puzzle",
+        "drawing"
       ]
     },
     {
@@ -1235,7 +1333,8 @@
         "breathing",
         "sleep",
         "blanket",
-        "music"
+        "music",
+        "puzzle"
       ]
     },
     {
@@ -1443,7 +1542,8 @@
         "walk",
         "outing",
         "zoo",
-        "bike"
+        "bike",
+        "exhibition"
       ]
     },
     {
@@ -1469,7 +1569,8 @@
         "book",
         "stargazing",
         "journal",
-        "camping"
+        "camping",
+        "board_game"
       ]
     },
     {
@@ -1482,7 +1583,8 @@
         "coffee",
         "book",
         "zoo",
-        "bakery"
+        "hamburger",
+        "exhibition"
       ]
     },
     {
@@ -1508,7 +1610,8 @@
         "music",
         "book",
         "journal",
-        "sleep"
+        "sleep",
+        "board_game"
       ]
     },
     {
@@ -1521,7 +1624,9 @@
         "coffee",
         "book",
         "dessert",
-        "bakery"
+        "hamburger",
+        "board_game",
+        "exhibition"
       ]
     },
     {
@@ -1534,7 +1639,8 @@
         "music",
         "journal",
         "tea",
-        "dessert"
+        "dessert",
+        "board_game"
       ]
     },
     {
@@ -1547,7 +1653,8 @@
         "journal",
         "music",
         "book",
-        "sleep"
+        "sleep",
+        "board_game"
       ]
     },
     {
@@ -1560,7 +1667,8 @@
         "walk",
         "bike",
         "outing",
-        "seaside"
+        "seaside",
+        "exhibition"
       ]
     },
     {
@@ -1586,7 +1694,8 @@
         "music",
         "book",
         "stargazing",
-        "journal"
+        "journal",
+        "board_game"
       ]
     },
     {
@@ -1599,7 +1708,8 @@
         "book",
         "journal",
         "dessert",
-        "game"
+        "game",
+        "board_game"
       ]
     },
     {
@@ -1612,7 +1722,8 @@
         "tea",
         "book",
         "hotpot",
-        "journal"
+        "journal",
+        "board_game"
       ]
     },
     {
@@ -1625,7 +1736,8 @@
         "sleep",
         "book",
         "journal",
-        "blanket"
+        "blanket",
+        "board_game"
       ]
     }
   ]

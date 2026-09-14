@@ -241,13 +241,14 @@
 
 html[data-sock-drag="disabled"] #preview{cursor:default}
 
- .sock-mini{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:90;width:40vw;max-width:240px;overflow:hidden;border:1px solid #ccc;border-radius:8px;background:#f5f5f5;-webkit-box-shadow:0 4px 20px #0002;box-shadow:0 4px 20px #0002;pointer-events:none}
+ .sock-mini{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:90;width:40vw;max-width:240px;overflow:hidden;border:1px solid #ccc;border-radius:50%;aspect-ratio:1;background:#f5f5f5;-webkit-box-shadow:0 4px 20px #0002;box-shadow:0 4px 20px #0002;pointer-events:none}
 .sock-mini[hidden]{display:none}
 #sock-mini-canvas{display:block;width:100%;height:auto}
 
 .sock-mini{opacity:0;visibility:hidden;-webkit-transform:translateY(calc(-100% - max(12px, env(safe-area-inset-top)) - 12px));transform:translateY(calc(-100% - max(12px, env(safe-area-inset-top)) - 12px));-webkit-transition:opacity 640ms cubic-bezier(.22,1,.36,1),visibility 0s linear 640ms,-webkit-transform 640ms cubic-bezier(.22,1,.36,1);transition:opacity 640ms cubic-bezier(.22,1,.36,1),visibility 0s linear 640ms,-webkit-transform 640ms cubic-bezier(.22,1,.36,1);transition:opacity 640ms cubic-bezier(.22,1,.36,1),transform 640ms cubic-bezier(.22,1,.36,1),visibility 0s linear 640ms;transition:opacity 640ms cubic-bezier(.22,1,.36,1),transform 640ms cubic-bezier(.22,1,.36,1),visibility 0s linear 640ms,-webkit-transform 640ms cubic-bezier(.22,1,.36,1)}
-.sock-mini.is-visible{opacity:1;visibility:visible;-webkit-transform:translateY(32px);transform:translateY(32px);-webkit-transition-delay:0s;transition-delay:0s}
-@media(prefers-reduced-motion:reduce){.sock-mini,.sock-mini.is-visible{-webkit-transition:none;transition:none;-webkit-transform:none;transform:none}}
+.sock-mini.is-visible{opacity:1;visibility:visible;-webkit-transform:translate(10dvw, 10dvh);transform:translate(10dvw, 10dvh);-webkit-transition-delay:0s;transition-delay:0s}
+@media(max-width:520px){.sock-mini.is-visible{-webkit-transform:translate(1dvw, 8dvh);transform:translate(1dvw, 8dvh)}}
+@media(prefers-reduced-motion:reduce){.sock-mini,.sock-mini.is-visible{-webkit-transition:none;transition:none}}
 
 /* Keep preview sharing immediately to the right of PNG export. */
 .export-section{gap:16px}
