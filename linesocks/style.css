@@ -283,3 +283,12 @@ html[data-sock-drag="disabled"] #preview{cursor:default}
  .export-actions #export,.export-actions #share-preview{min-height:56px;font-size:15px;gap:8px;padding:12px 8px}
  .export-actions svg{width:18px;height:18px}
 }
+
+/* Allow bilingual controls to wrap on narrow screens. */
+.user-section .text-option{white-space:normal;line-height:1.5;overflow-wrap:anywhere}
+.color-row>span{min-width:0;flex-shrink:0;max-width:110px;white-space:normal}
+.stripe-slider label{white-space:normal;line-height:1.5}
+.packaging-control,.note-toolbar,.activity-toolbar{flex-wrap:wrap}
+.export-actions #export,.export-actions #share-preview{white-space:normal}
+@media(max-width:520px){.stripe-settings h3{flex-wrap:wrap}.activity-result{min-width:0;overflow-wrap:anywhere}.control-title{line-height:1.5}}
+@media(max-width:520px){.sock-base-inline{flex-wrap:wrap}.sock-base-inline>.sock-base-options{min-width:0;flex-wrap:wrap;gap:12px}.sock-base-inline>#sock-base-label{width:100%;flex-basis:100%}}

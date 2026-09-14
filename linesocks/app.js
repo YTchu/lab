@@ -262,17 +262,17 @@ function renderColors(){
  colors.forEach((color,index)=>{
  const card=document.createElement('div');card.className='stripe-card';container.append(card);
  const row=document.createElement('div');row.className='color-row';
- const label=document.createElement('span');label.textContent=`條紋 ${String(index+1).padStart(2,'0')}`;row.append(label);
- const input=document.createElement('input');input.type='color';input.className='custom-color';input.value=color;input.setAttribute('aria-label',`條紋 ${index+1} 自訂顏色`);
+ const label=document.createElement('span');label.textContent=`條紋 / Stripe ${String(index+1).padStart(2,'0')}`;row.append(label);
+ const input=document.createElement('input');input.type='color';input.className='custom-color';input.value=color;input.setAttribute('aria-label',`條紋 ${index+1} 自訂顏色 / Stripe ${index+1} color`);
  const hex=document.createElement('code');hex.className='hex';hex.textContent=color;
  input.addEventListener('input',()=>{if(!setStripeColor(index,input.value.toUpperCase())){input.value=colors[index];return;}hex.textContent=colors[index];draw();});row.append(input,hex);card.append(row);
- card.append(makeSlider(`條紋 ${index+1} 粗細`, `width-${index}`, widths[index], 6, 48, value => setStripeDimension(widths,index,value)));
- if(index < colors.length-1) card.append(makeSlider(`條紋 ${index+1} 與 ${index+2} 間距`, `gap-${index}`, gaps[index], 0, 56, value => setStripeDimension(gaps,index,value), true));
+ card.append(makeSlider(`條紋 ${index+1} 粗細 / Width`, `width-${index}`, widths[index], 6, 48, value => setStripeDimension(widths,index,value)));
+ if(index < colors.length-1) card.append(makeSlider(`條紋 ${index+1}–${index+2} 間距 / Gap`, `gap-${index}`, gaps[index], 0, 56, value => setStripeDimension(gaps,index,value), true));
  });
  document.querySelector('#count-output').value=colors.length;document.querySelector('#count').value=colors.length;
  document.querySelector('#minus').disabled=colors.length<=3;document.querySelector('#plus').disabled=colors.length>=12;
 }
-document.querySelector('#minus').addEventListener('click',()=>{if(colors.length>3){if(new Set(colors.slice(0,-1)).size<2){document.querySelector('#status').textContent='每雙襪子至少保留 2 色。';return;}colors.pop();widths.pop();gaps.pop();renderColors();draw();}});
+document.querySelector('#minus').addEventListener('click',()=>{if(colors.length>3){if(new Set(colors.slice(0,-1)).size<2){document.querySelector('#status').textContent='每雙襪子至少保留 2 色。 / Keep at least 2 colors.';return;}colors.pop();widths.pop();gaps.pop();renderColors();draw();}});
 document.querySelector('#plus').addEventListener('click',()=>{if(colors.length<12){colors.push(colors.at(-1));widths.push(widths.at(-1));gaps.push(10);renderColors();draw();}});
 async function createPreviewPNG(height=1350){
  await document.fonts.ready;
@@ -305,7 +305,7 @@ function downloadPreviewPNG(blob){
 async function savePreview(share=false){
  const buttons=[...document.querySelectorAll('#export,#share-preview,input[name="export-size"]')],status=document.querySelector('#status');
  const height=document.querySelector('input[name="export-size"]:checked')?.value==='1920'?1920:1350;
- buttons.forEach(button=>button.disabled=true);status.textContent='正在製作 PNG…';
+ buttons.forEach(button=>button.disabled=true);status.textContent='正在製作 PNG… / Creating PNG…';
  try{
   const blob=await createPreviewPNG(height);
   if(share){
@@ -313,15 +313,15 @@ async function savePreview(share=false){
    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
     try{
      await navigator.share({files:[file],title:'我的 LINE SOCKS 樣稿'});
-     status.textContent='已交由系統分享。';return;
+     status.textContent='已交由系統分享。 / Opened system sharing.';return;
     }catch(error){
-     if(error.name==='AbortError'){status.textContent='已取消分享。';return;}
-     downloadPreviewPNG(blob);status.textContent='無法開啟系統分享，已下載 PNG，請手動分享圖片。';return;
+     if(error.name==='AbortError'){status.textContent='已取消分享。 / Sharing canceled.';return;}
+     downloadPreviewPNG(blob);status.textContent='無法開啟系統分享，已下載 PNG，請手動分享圖片。 / Sharing unavailable. PNG downloaded for manual sharing.';return;
     }
    }
-   downloadPreviewPNG(blob);status.textContent='此瀏覽器不支援圖片分享，已下載 PNG，請手動分享圖片。';
-  }else{downloadPreviewPNG(blob);status.textContent=`PNG 已匯出 · 1080 × ${height} px`;}
- }catch(error){status.textContent=share?'分享失敗，請再試一次。':'匯出失敗，請再試一次。';}
+   downloadPreviewPNG(blob);status.textContent='此瀏覽器不支援圖片分享，已下載 PNG，請手動分享圖片。 / File sharing unsupported. PNG downloaded.';
+  }else{downloadPreviewPNG(blob);status.textContent=`PNG 已匯出 / Exported · 1080 × ${height} px`;}
+ }catch(error){status.textContent=share?'分享失敗，請再試一次。 / Sharing failed. Please try again.':'匯出失敗，請再試一次。 / Export failed. Please try again.';}
  finally{buttons.forEach(button=>button.disabled=false);}
 }
 document.querySelector('#export').addEventListener('click',()=>savePreview());
@@ -334,8 +334,8 @@ function wrapNote(value){
  ctx.restore();return lines;
 }
 const textChoices=[
- ['weather-choice',[['auto','自動取得'],['sunny','晴天'],['cloudy','多雲'],['rainy','雨天'],['windy','有風'],['stormy','雷雨']]],
- ['mood-choice',[['happy','開心'],['calm','平靜'],['tired','疲憊'],['sad','難過'],['anxious','焦慮'],['angry','生氣'],['lonely','孤單']]]
+ ['weather-choice',[['auto','自動取得 · Auto'],['sunny','晴天 · Sunny'],['cloudy','多雲 · Cloudy'],['rainy','雨天 · Rainy'],['windy','有風 · Windy'],['stormy','雷雨 · Stormy']]],
+ ['mood-choice',[['happy','開心 · Happy'],['calm','平靜 · Calm'],['tired','疲憊 · Tired'],['sad','難過 · Sad'],['anxious','焦慮 · Anxious'],['angry','生氣 · Angry'],['lonely','孤單 · Lonely']]]
 ];
 for(const [id,options] of textChoices){
  const group=document.querySelector('#'+id);group.replaceChildren();
@@ -350,7 +350,7 @@ for(const [id,options] of textChoices){
  }
 }
 let acceptedNote='';
-document.querySelector('#mood-note').addEventListener('input',event=>{const lines=wrapNote(event.target.value);if(lines.length>3){event.target.value=acceptedNote;document.querySelector('#note-help').textContent='已達 3 行上限，請縮短文字後再輸入。';return;}noteEdited=true;acceptedNote=event.target.value;moodState.note=lines;document.querySelector('#note-help').textContent=`${lines.length} / 3 行 · 依包裝文字寬度自動換行`;draw();});
+document.querySelector('#mood-note').addEventListener('input',event=>{const lines=wrapNote(event.target.value);if(lines.length>3){event.target.value=acceptedNote;document.querySelector('#note-help').textContent='已達 3 行上限，請縮短文字後再輸入。 / Maximum 3 lines. Please shorten your text.';return;}noteEdited=true;acceptedNote=event.target.value;moodState.note=lines;document.querySelector('#note-help').textContent=`${lines.length} / 3 行 / lines · 自動換行 / Auto-wrap`;draw();});
 function refreshLocalTime(){syncMoodScenario();draw();}
 refreshLocalTime();setInterval(()=>{refreshLocalTime();refreshAutomaticWeather();},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshLocalTime();refreshAutomaticWeather();}});
@@ -381,9 +381,9 @@ for(const [id,key,unit] of sockAxisControls){const input=document.querySelector(
 document.querySelector('#reset-bag-socks')?.addEventListener('click',()=>{Object.assign(bagSockTransform,{scale:100,x:0,y:0});for(const [id,key,unit] of sockAxisControls){document.querySelector('#'+id).value=bagSockTransform[key];document.querySelector('#'+id+'-value').value=bagSockTransform[key]+unit;}draw();});
 
 const scenePalettes=[
- ['background','預覽背景',['#a8a8a8','#F5F5F5','#D6D3CC','#202020','#C4D6DD','#E8CFD3']],
- ['bag','夾鍊袋',['#FFFFFF','#C8D9EA','#E9CAD6','#D6DFC3','#D9C9B9','#666666']],
- ['ink','夾鍊袋文字',['#202020','#FFFFFF','#F16625','#283E63','#7B3042','#34624C']]
+ ['background','預覽背景 · Background',['#a8a8a8','#F5F5F5','#D6D3CC','#202020','#C4D6DD','#E8CFD3']],
+ ['bag','夾鍊袋 · Packaging',['#FFFFFF','#C8D9EA','#E9CAD6','#D6DFC3','#D9C9B9','#666666']],
+ ['ink','夾鍊袋文字 · Print color',['#202020','#FFFFFF','#F16625','#283E63','#7B3042','#34624C']]
 ];
 for(const [key,label,palette] of scenePalettes){
  const field=document.createElement('fieldset');field.className='scene-color-field';const legend=document.createElement('legend');legend.textContent=label;field.append(legend);
@@ -535,7 +535,7 @@ function applyScenarioThought(){
  if(!currentScenario)return;
  acceptedNote=currentScenario.thought;noteEdited=false;
  document.querySelector('#mood-note').value=acceptedNote;moodState.note=wrapNote(acceptedNote);
- document.querySelector('#note-help').textContent='已帶入情境文字，可自由編輯。';
+ document.querySelector('#note-help').textContent='已帶入情境文字，可自由編輯。 / Suggested text applied. You can edit it.';
 }
 function syncMoodScenario(force=false){
  if(!scenarioData)return;
@@ -548,8 +548,8 @@ function syncMoodScenario(force=false){
  const output=document.querySelector('#activity-result');output.replaceChildren();
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
  renderIconPaths(svg,moodState.thought);
- const label=document.createElement('span');label.textContent=action?.label||'等待天氣資料';output.append(svg,label);
- document.querySelector('#scenario-status').textContent=currentScenario?'依心情、天氣與時段自動建議活動。':'未取得可用天氣，暫不產生活動與情境文字。';
+ const label=document.createElement('span');label.textContent=action?`${action.label} · ${activityEnglishLabels[actionKey]||actionKey.replace(/_/g,' ').toUpperCase()}`:'等待天氣資料 · Waiting for weather';output.append(svg,label);
+ document.querySelector('#scenario-status').textContent=currentScenario?'依心情、天氣與時段自動建議活動。 / Activities suggested by mood, weather and time.':'未取得可用天氣，暫不產生活動與情境文字。 / Weather unavailable. Suggestions are paused.';
  document.querySelector('#regenerate-activity').disabled=!currentScenario;document.querySelector('#apply-thought').disabled=!currentScenario;
  if(!noteEdited){if(currentScenario)applyScenarioThought();else {acceptedNote='';moodState.note=[];document.querySelector('#mood-note').value='';}}
  document.querySelector('#generate-stripes').disabled=!currentScenario;
@@ -565,12 +565,12 @@ async function loadScenarioData(){
  try{const response=await fetch('./line-mood-socks-scenarios.json?v=20260914-new-activities');if(!response.ok)throw new Error('JSON unavailable');acceptScenarioData(await response.json());}
  catch{
   try{const cached=JSON.parse(localStorage.getItem('line-socks-scenarios-v1'));if(cached){acceptScenarioData(cached);return;}}catch{}
-  document.querySelector('#scenario-status').textContent='瀏覽器未能讀取情境檔，請選取同資料夾的 JSON 載入。';document.querySelector('#scenario-file-field').hidden=false;
+  document.querySelector('#scenario-status').textContent='瀏覽器未能讀取情境檔，請選取同資料夾的 JSON 載入。 / Unable to load scenarios. Select the JSON file.';document.querySelector('#scenario-file-field').hidden=false;
  }
 }
 document.querySelector('#scenario-file').addEventListener('change',async event=>{
  const file=event.target.files[0];if(!file)return;
- try{acceptScenarioData(JSON.parse(await file.text()));}catch(error){document.querySelector('#scenario-status').textContent='載入失敗：'+error.message;}
+ try{acceptScenarioData(JSON.parse(await file.text()));}catch(error){document.querySelector('#scenario-status').textContent='載入失敗 / Load failed: '+error.message;}
  event.target.value='';
 });
 document.querySelector('#regenerate-activity').addEventListener('click',()=>{syncMoodScenario(true);draw();});
@@ -634,7 +634,7 @@ function generateScenarioStripes(){
 }
 function setStripeColor(index,color){
  const next=[...colors];next[index]=color;const count=new Set(next.map(c=>c.toLowerCase())).size;
- if(count<2||count>6){document.querySelector('#status').textContent='每雙襪子的條紋需保留 2～6 色。';return false;}
+ if(count<2||count>6){document.querySelector('#status').textContent='每雙襪子的條紋需保留 2～6 色。 / Use 2–6 stripe colors.';return false;}
  colors=next;return true;
 }
 document.querySelector('#generate-stripes').addEventListener('click',()=>{generateScenarioStripes();draw();});
