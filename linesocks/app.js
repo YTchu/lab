@@ -2,7 +2,7 @@
 const canvas = document.querySelector('#preview');
 const ctx = canvas.getContext('2d');
 const packageTextLayer=document.querySelector('#package-text-layer');
-packageTextLayer.style.removeProperty('transform');
+packageTextLayer.style.removeProperty('zoom');
 let weatherSelection='sunny';
 let committedTime=null, workflowGenerating=false;
 function selectedWeatherIcon(){
@@ -591,7 +591,7 @@ for(const [key,label] of sceneFields){
 
 function renderHtmlPackageText(){
  packageTextLayer.hidden=!showPackaging;
- packageTextLayer.style.zoom=String(canvas.getBoundingClientRect().width/1080);
+ packageTextLayer.style.transform=`scale(${canvas.getBoundingClientRect().width/1080})`;
  document.documentElement.style.setProperty('--package-font',`"${packageFont}", Arial, sans-serif`);
  packageTextLayer.style.setProperty('--package-font',`"${packageFont}", Arial, sans-serif`);
  packageTextLayer.style.color=sceneColors.ink;
@@ -619,10 +619,10 @@ function renderHtmlPackageText(){
 
 // Export the actual HTML line boxes, including wrapping and CSS spacing.
 function paintPackageHtml(){
- // Measure a full-size print surface, independent of mobile CSS zoom and rounding.
+ // Measure an unscaled print surface, independent of the mobile preview transform.
  const printLayer=packageTextLayer.cloneNode(true);printLayer.removeAttribute('id');
  printLayer.hidden=false;printLayer.setAttribute('aria-hidden','true');
- Object.assign(printLayer.style,{zoom:'1',position:'fixed',left:'-12000px',top:'0',visibility:'hidden',width:'1080px',height:'1350px'});
+ Object.assign(printLayer.style,{transform:'none',position:'fixed',left:'-12000px',top:'0',visibility:'hidden',width:'1080px',height:'1350px'});
  document.body.append(printLayer);
  try{
  const reference=printLayer.getBoundingClientRect(),ratio=1080/reference.width;
@@ -665,7 +665,7 @@ function paintPackageHtml(){
  }finally{printLayer.remove();}
 }
 
-new ResizeObserver(()=>{packageTextLayer.style.zoom=String(canvas.getBoundingClientRect().width/1080);}).observe(canvas);
+new ResizeObserver(()=>{packageTextLayer.style.transform=`scale(${canvas.getBoundingClientRect().width/1080})`;}).observe(canvas);
 
 // Embedded artwork settings preserve the saved typography and sock placement.
 const savedBlock=document.querySelector('#saved-developer-settings');
