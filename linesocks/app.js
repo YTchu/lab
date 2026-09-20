@@ -494,7 +494,7 @@ function draw(forExport=false){
  if(forExport&&showPackaging)paintPackageHtml();
  drawSockThumbnail();
 }
-document.querySelector('#packaging').addEventListener('change',event=>{showPackaging=event.target.checked;draw();});
+document.querySelector('#packaging').addEventListener('click',event=>{showPackaging=!showPackaging;event.currentTarget.setAttribute('aria-pressed',String(!showPackaging));draw();});
 async function createPreviewPNG(height=1350){
  await document.fonts.ready;
  

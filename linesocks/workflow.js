@@ -28,16 +28,56 @@ conditions.id = "flow-conditions";
 conditions.hidden = false;
 main.insertBefore(conditions, preview);
 conditions.append(weatherSection);
-ui(".intro").after(preview);
-const resultControls = element("div", "flow-result-controls", "");
+ui(".intro").after(moodSection, conditions, preview);
+const resultControls = element("details", "flow-result-controls", "");
+resultControls.open = false;
+resultControls.dataset.expanded = "false";
+const resultSummary = element(
+  "summary", "flow-result-summary",
+  '<span>編輯今日心情</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>',
+);
 main.insertBefore(resultControls, ui("footer"));
-resultControls.append(thoughtSection, activitySection, exportSection);
+resultControls.append(resultSummary, thoughtSection, activitySection);
+resultControls.after(exportSection);
+let resultExpanded = false;
+let resultAnimation = null;
+resultSummary.setAttribute("aria-expanded", "false");
+resultSummary.addEventListener("click", (event) => {
+  event.preventDefault();
+  resultExpanded = !resultExpanded;
+  resultSummary.setAttribute("aria-expanded", String(resultExpanded));
+  resultControls.dataset.expanded = String(resultExpanded);
+  const startHeight = resultControls.getBoundingClientRect().height;
+  resultAnimation?.cancel();
+  resultAnimation = null;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    resultControls.open = resultExpanded;
+    resultControls.style.removeProperty("overflow");
+    return;
+  }
+  resultControls.open = resultExpanded;
+  const endHeight = resultControls.getBoundingClientRect().height;
+  // Keep content mounted while closing, then restore native details behavior.
+  resultControls.open = true;
+  resultControls.style.overflow = "hidden";
+  const animation = resultControls.animate(
+    [{ height: `${startHeight}px` }, { height: `${endHeight}px` }],
+    { duration: 220, easing: "cubic-bezier(0.2, 0, 0, 1)" },
+  );
+  resultAnimation = animation;
+  animation.onfinish = () => {
+    if (resultAnimation !== animation) return;
+    resultControls.open = resultExpanded;
+    resultControls.style.removeProperty("overflow");
+    resultAnimation = null;
+  };
+});
 // Keep packaging and scene color controls directly below the relocated preview.
 const packaging = ui(".packaging-control");
 preview.after(packaging, sceneSection);
 thoughtSection.classList.add("flow-panel");
 activitySection.classList.add("flow-panel");
-ui("#description-title").textContent = "給今天的話 · THOUGHT";
+ui("#description-title").textContent = "03 / 給今天的話 · THOUGHT";
 ui("#mood-note").hidden = false;
 ui("#mood-note").readOnly = false;
 ui("#note-help").textContent = "也可寫下你的心情";
@@ -56,6 +96,30 @@ function renderMoodPickerIcon(svg, value) {
       .querySelector("path")
       .setAttribute("d", "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20 " + moodPickerFaces[value]);
 }
+// A manual choice invalidates any pending automatic result.
+async function selectLocalWeather() {
+  const request = ++weatherRequest;
+  const button = ui("#weather-choice button");
+  button.disabled = true;
+  ui("#weather-message").textContent = "正在取得所在地天氣…";
+  try {
+    await refreshAutomaticWeather();
+    if (request !== weatherRequest) return;
+    const found = {
+      sunny: "sunny", partly_cloudy: "cloudy", cloudy: "cloudy",
+      rainy: "rainy", fog: "cloudy", snow: "rainy", storm: "stormy", wind: "windy",
+    }[automaticWeather.icon];
+    draft.weather = found || randomPick(["sunny", "cloudy", "rainy", "windy", "stormy"]);
+    ui("#weather-message").textContent = found
+      ? "當地天氣。或選擇你的心情天氣"
+      : "可以選擇你的心情天氣";
+    syncDraftButtons();
+    applySelection();
+  } finally {
+    button.disabled = false;
+  }
+}
+
 function bindDraft() {
   for (const [id, key] of [
     ["mood-choice", "mood"],
@@ -74,31 +138,13 @@ function bindDraft() {
       b.addEventListener("click", async () => {
         if (key === "mood") conditions.hidden = false;
         if (value === "auto") {
-          const request = ++weatherRequest;
-          b.disabled = true;
-          ui("#weather-message").textContent = "正在取得當地天氣…";
-          await refreshAutomaticWeather();
-          b.disabled = false;
-          if (request !== weatherRequest) return;
-          const found = {
-            sunny: "sunny",
-            partly_cloudy: "cloudy",
-            cloudy: "cloudy",
-            rainy: "rainy",
-            fog: "cloudy",
-            snow: "rainy",
-            storm: "stormy",
-            wind: "windy",
-          }[automaticWeather.icon];
-          if (found) {
-            draft.weather = found;
-            ui("#weather-message").textContent = "已取得當地天氣，也可以手動調整";
-          } else ui("#weather-message").textContent = "暫時無法取得天氣，請手動選擇";
+          await selectLocalWeather();
+          return;
         } else {
           draft[key] = value;
           if (key === "weather") {
             weatherRequest++;
-            ui("#weather-message").textContent = "已使用手動天氣";
+            ui("#weather-message").textContent = "你的心情天氣";
           }
         }
         syncDraftButtons();
@@ -222,3 +268,5 @@ ui("#copy-thought").addEventListener("click", async () => {
 bindDraft();
 acceptScenarioData(SCENARIOS);
 applySelection();
+
+selectLocalWeather();

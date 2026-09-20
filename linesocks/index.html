@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#f5f5f5" />
     <title>ONE DAY ONE MOOD — LINE SOCKS</title>
     <!-- Base styles and optional fonts; stylesheet order is intentional. -->
-    <link rel="stylesheet" href="style.css?v=20260920-activity-borderless" />
-    <script src="app.js?v=20260919-safari-text-fix" defer></script>
+    <link rel="stylesheet" href="style.css?v=20260920-view-socks-toggle" />
+    <script src="app.js?v=20260920-view-socks-toggle" defer></script>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto%20Sans%20TC:wght@400;700&amp;display=swap"
@@ -53,10 +53,10 @@
         }
       }
     </script>
-    <link rel="stylesheet" href="workflow.css?v=20260920-activity-icon" />
+    <link rel="stylesheet" href="workflow.css?v=20260920-results-motion" />
     <!-- Deferred scripts execute in order: app.js, scenarios.js, workflow.js. -->
     <script src="scenarios.js" defer></script>
-    <script src="workflow.js?v=20260920-activity-icon" defer></script>
+    <script src="workflow.js?v=20260920-results-motion" defer></script>
   </head>
   <body>
     <aside class="sock-mini" aria-label="襪子即時縮圖" aria-hidden="true">
@@ -249,8 +249,11 @@
       </section>
       <!-- Preview appearance controls -->
       <div class="packaging-control">
-        <label for="packaging"><input id="packaging" type="checkbox" checked="" /> 顯示夾鍊袋模板 · Show
-          packaging</label></div>
+        <button id="packaging" type="button" aria-pressed="false">
+          <span class="packaging-toggle-track" aria-hidden="true"></span>
+          <span>VIEW SOCKS</span>
+        </button>
+      </div>
 
       <section class="scene-editor user-section" aria-label="配色設定">
         <div id="scene-color-controls"></div>
@@ -275,7 +278,7 @@
       <section class="mood-editor user-section" aria-labelledby="activity-title">
         <div class="mood-fields">
           <fieldset class="icon-field activity-field">
-            <legend id="activity-title" class="control-title">做點什麼 · ACTIVITY</legend>
+            <legend id="activity-title" class="control-title">04 / 做點什麼 · ACTIVITY</legend>
             <div class="activity-toolbar">
               <div id="activity-result" class="activity-result" aria-live="polite">
                 等待情境資料 · Waiting for scenarios

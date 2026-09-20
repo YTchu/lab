@@ -6,7 +6,7 @@ button { cursor: pointer; }
 button:focus-visible, a:focus-visible, input:focus-visible { outline: rgb(175, 175, 175) solid 3px; outline-offset: 4px; }
 .app { max-width: 640px; margin: auto; padding: 0px 40px; }
 .intro { padding: 16px 0 32px; }
-h1 { font-size: 39px; letter-spacing: -1.8px; font-weight: 500; margin: 16px 0 0 0; }
+h1 { font-size: 39px; letter-spacing: -1.8px; font-weight: 500; margin:0; }
 h1 span { display: block; margin-top: 12px; }
 .intro p { font-size: 12px; color: rgb(130, 130, 130); line-height: 1.8; margin: 0px; }
 .preview-section { position: relative; border: 1px solid rgb(224, 224, 224); overflow: hidden; }
@@ -36,8 +36,11 @@ footer { padding: 16px 0; border-top: 1px solid var(--line); display: flex; just
 .preview-section { background: rgb(205, 205, 205); max-height: none; }
 canvas { max-height: none; object-fit: initial; }
 .packaging-control { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0px; border-bottom: 1px solid var(--line); }
-.packaging-control label { display: flex; align-items: center; gap: 8px; font-size: 12px; cursor: pointer; }
-.packaging-control input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0px; }
+#packaging { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0; border: none; background: transparent; color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
+.packaging-toggle-track { display: inline-flex; align-items: center; width: 40px; height: 24px; padding: 3px; border-radius: 999px; background: #cccccc; flex-shrink: 0; }
+.packaging-toggle-track::before { content: ""; width: 18px; height: 18px; border-radius: 50%; background: #ffffff; }
+#packaging[aria-pressed="true"] .packaging-toggle-track { background: #292929; }
+#packaging[aria-pressed="true"] .packaging-toggle-track::before { transform: translateX(16px); }
 .mood-editor { margin: 32px 0; padding: 0; }
 .mood-fields label { display: flex; flex-direction: column; gap: 9px; font-size: 10px; letter-spacing: 0.6px; position: relative; }
 .mood-fields textarea { border: 1px solid rgb(204, 204, 204); background: rgb(255, 255, 255); color: rgb(34, 34, 34); padding: 12px; width: 100%; border-radius: 0px; font: 12px Arial, sans-serif; }
