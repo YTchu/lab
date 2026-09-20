@@ -1,12 +1,11 @@
-.preview-section {position: sticky; top: -24px; z-index: 10; }
+.preview-section {top: 0; z-index: 10; }
 html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 [hidden] { display: none !important; }
 .intro .flow-brand { font-size: 20px; font-weight: 400; letter-spacing: -1px; }
 .intro .flow-brand span { display: block; margin-top: 6px; font-size: 9px; letter-spacing: 2px; }
 .intro h1 { font-size: 48px; }
 .intro p { font-size: 14px; line-height: 1.9; }
-.flow-primary { display: flex; align-items: center; justify-content: space-between; min-height: 54px; width: 100%; padding: 14px 18px; background: rgb(41, 41, 41); color: rgb(255, 255, 255); border: 1px solid rgb(41, 41, 41); border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 700; cursor: pointer; }
-.flow-panel { margin: 0px; padding: 24px 0px; }
+.flow-primary { display: flex; align-items: center; justify-content: space-between; min-height: 54px; width: 100%; padding: 14px 18px; background: rgb(41, 41, 41); color: rgb(255, 255, 255); border: 1px solid rgb(41, 41, 41); border-radius: 6px; text-decoration: none; font-size: 13px; cursor: pointer; }
 .flow-panel .control-title { font-size: 14px; line-height: 1.6; }
 .flow-panel fieldset { min-width: 0px; }
 .flow-panel .mood-fields { display: block; }
@@ -17,13 +16,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .flow-panel #weather-choice { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding: 10px 2px 14px; }
 .flow-panel #weather-choice button { flex: 0 0 auto; white-space: nowrap; min-height: 44px; min-width: 44px; padding: 10px 12px; font-size: 12px; border-radius: 6px; }
 .flow-panel #weather-choice button[aria-pressed="true"] { background: rgb(41, 41, 41); color: white; }
-.flow-hint { font-size: 12px; line-height: 1.8; color: rgb(105, 105, 105); }
-.flow-result-controls .flow-panel { padding: 24px 0px; }
 .flow-result-controls .note-field textarea { font-size: 16px; }
 .flow-result-controls .activity-toolbar { gap: 14px; }
-.flow-result-controls #regenerate-activity { min-width: 80px; min-height: 48px; font-size: 12px; }
-.flow-result-controls .export-section { display: block; padding: 28px 0px; }
-.flow-result-controls .export-actions { display: flex; flex-direction: column; gap: 10px; }
+.flow-result-controls .export-section { display: block; padding: 32px 0; border-top: 1px solid var(--line); }
+.flow-result-controls .export-actions { display: flex; flex-direction: row-reverse; gap: 16px; }
 .flow-result-controls .export-actions button { min-height: 54px; width: 100%; justify-content: center; font-size: 13px; }
 .flow-result-controls #share-preview { background: rgb(41, 41, 41); color: white; }
 .flow-result-controls #export { background: transparent; color: rgb(41, 41, 41); border: 1px solid rgb(204, 204, 204); }
@@ -37,7 +33,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .flow-panel button:focus-visible, .flow-primary:focus-visible { outline: rgb(107, 129, 91) solid 3px; outline-offset: 3px; }
 @media (min-width: 768px) {
   .intro h1 { font-size: 56px; }
-  .flow-panel { padding-block: 30px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

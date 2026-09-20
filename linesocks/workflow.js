@@ -28,8 +28,6 @@ conditions.id = "flow-conditions";
 conditions.hidden = false;
 main.insertBefore(conditions, preview);
 conditions.append(weatherSection);
-// Retain the existing vertical spacing below weather controls.
-conditions.append(element("p", "flow-hint", ""));
 ui(".intro").after(preview);
 const resultControls = element("div", "flow-result-controls", "");
 main.insertBefore(resultControls, ui("footer"));
@@ -43,7 +41,6 @@ ui("#description-title").textContent = "給今天的話 · THOUGHT";
 ui("#mood-note").hidden = false;
 ui("#mood-note").readOnly = false;
 ui("#note-help").textContent = "也可寫下你的心情";
-ui("#regenerate-activity").textContent = "換一個 ↻";
 // Face details for the horizontal mood picker.
 const moodPickerFaces = {
   happy: "M9 9v1 M15 9v1 M7 14h10c-1 5-9 5-10 0Z",
