@@ -63,3 +63,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 @media (prefers-reduced-motion: reduce) {
   .flow-result-summary svg { transition: none; }
 }
+
+.make-today { justify-content: center; margin: 0 0 48px; }
+.make-today:hover:not(:disabled) { background: #454545; }
+.make-today:disabled { opacity: 0.5; cursor: wait; }

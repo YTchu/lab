@@ -7,7 +7,7 @@
     <title>ONE DAY ONE MOOD — LINE SOCKS</title>
     <!-- Base styles and optional fonts; stylesheet order is intentional. -->
     <link rel="stylesheet" href="style.css?v=20260920-view-socks-toggle" />
-    <script src="app.js?v=20260920-view-socks-toggle" defer></script>
+    <script src="app.js?v=20260920-make-today" defer></script>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Noto%20Sans%20TC:wght@400;700&amp;display=swap"
@@ -53,10 +53,10 @@
         }
       }
     </script>
-    <link rel="stylesheet" href="workflow.css?v=20260920-results-motion" />
+    <link rel="stylesheet" href="workflow.css?v=20260920-make-today" />
     <!-- Deferred scripts execute in order: app.js, scenarios.js, workflow.js. -->
     <script src="scenarios.js" defer></script>
-    <script src="workflow.js?v=20260920-results-motion" defer></script>
+    <script src="workflow.js?v=20260920-make-today" defer></script>
   </head>
   <body>
     <aside class="sock-mini" aria-label="襪子即時縮圖" aria-hidden="true">
@@ -68,7 +68,7 @@
         <div class="flow-brand">ONE DAY ONE MOOD<span>LINE SOCKS</span></div><h1>出發吧<span style="display:inline-block;transform: rotate(8deg)">！</span><br>OFF WE GO</h1><p>隨著心情，跟著天氣，穿上你的襪子，一起出發吧！</p>
       </section>
       <!-- Preview artwork and export text overlay -->
-      <section class="preview-section" aria-label="襪子樣稿預覽">
+      <section hidden class="preview-section" aria-label="襪子樣稿預覽">
         <div class="preview-artwork">
           <canvas
             id="preview"
@@ -248,14 +248,14 @@
         </div>
       </section>
       <!-- Preview appearance controls -->
-      <div class="packaging-control">
+      <div class="packaging-control" hidden>
         <button id="packaging" type="button" aria-pressed="false">
           <span class="packaging-toggle-track" aria-hidden="true"></span>
           <span>VIEW SOCKS</span>
         </button>
       </div>
 
-      <section class="scene-editor user-section" aria-label="配色設定">
+      <section hidden class="scene-editor user-section" aria-label="配色設定">
         <div id="scene-color-controls"></div>
       </section>
       <!-- Scenario inputs -->
@@ -275,7 +275,7 @@
           </fieldset>
         </div>
       </section>
-      <section class="mood-editor user-section" aria-labelledby="activity-title">
+      <section class="mood-editor user-section" aria-labelledby="activity-title" hidden>
         <div class="mood-fields">
           <fieldset class="icon-field activity-field">
             <legend id="activity-title" class="control-title">04 / 做點什麼 · ACTIVITY</legend>
@@ -293,7 +293,7 @@
           </fieldset>
         </div>
       </section>
-      <section class="mood-editor user-section" aria-labelledby="description-title">
+      <section class="mood-editor user-section" aria-labelledby="description-title" hidden>
         <div class="mood-fields">
           <div class="note-field">
             <label id="description-title" for="mood-note" class="control-title">描述文字 · DESCRIPTION</label><textarea id="mood-note" rows="3" aria-describedby="note-help"></textarea>
@@ -304,7 +304,7 @@
         </div>
       </section>
       <!-- Image export and sharing -->
-      <section class="export-section">
+      <section hidden class="export-section">
         <div>
           <h2>穿上吧<span style="display:inline-block;transform: rotate(8deg)">！</span>OFF WE GO</h2>
           <div class="export-size" role="group" aria-labelledby="export-size-label">

@@ -2,7 +2,8 @@
 // Page flow and interactions built on the shared socks renderer.
 const ui = (s) => document.querySelector(s);
 let draft = { mood: "happy", weather: "sunny", time: scenarioTime() },
-  weatherRequest = 0;
+  weatherRequest = 0,
+  weatherReady = false;
 const main = ui(".app"),
   preview = ui(".preview-section");
 const moodSection = ui('[aria-labelledby="mood-title"]'),
@@ -29,7 +30,16 @@ conditions.hidden = false;
 main.insertBefore(conditions, preview);
 conditions.append(weatherSection);
 ui(".intro").after(moodSection, conditions, preview);
+const makeToday = element("button", "flow-primary make-today", "MAKE TODAY'S SOCKS");
+makeToday.id = "make-today";
+makeToday.type = "button";
+makeToday.disabled = true;
+preview.id = "socks-preview";
+makeToday.setAttribute("aria-controls", "socks-preview");
+makeToday.setAttribute("aria-expanded", "false");
+conditions.after(makeToday);
 const resultControls = element("details", "flow-result-controls", "");
+resultControls.hidden = true;
 resultControls.open = false;
 resultControls.dataset.expanded = "false";
 const resultSummary = element(
@@ -75,6 +85,22 @@ resultSummary.addEventListener("click", (event) => {
 // Keep packaging and scene color controls directly below the relocated preview.
 const packaging = ui(".packaging-control");
 preview.after(packaging, sceneSection);
+// Keep editable content mounted inside the initially collapsed result panel.
+thoughtSection.hidden = false;
+activitySection.hidden = false;
+makeToday.addEventListener("click", () => {
+  if (!weatherReady) return;
+  for (const section of [preview, packaging, sceneSection, resultControls, exportSection]) {
+    section.hidden = false;
+  }
+  applySelection();
+  syncSockThumbnailVisibility();
+  makeToday.setAttribute("aria-expanded", "true");
+  preview.scrollIntoView({
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    block: "start",
+  });
+});
 thoughtSection.classList.add("flow-panel");
 activitySection.classList.add("flow-panel");
 ui("#description-title").textContent = "03 / 給今天的話 · THOUGHT";
@@ -99,6 +125,8 @@ function renderMoodPickerIcon(svg, value) {
 // A manual choice invalidates any pending automatic result.
 async function selectLocalWeather() {
   const request = ++weatherRequest;
+  weatherReady = false;
+  makeToday.disabled = true;
   const button = ui("#weather-choice button");
   button.disabled = true;
   ui("#weather-message").textContent = "正在取得所在地天氣…";
@@ -113,8 +141,8 @@ async function selectLocalWeather() {
     ui("#weather-message").textContent = found
       ? "當地天氣。或選擇你的心情天氣"
       : "可以選擇你的心情天氣";
+    weatherReady = true;
     syncDraftButtons();
-    applySelection();
   } finally {
     button.disabled = false;
   }
@@ -144,11 +172,11 @@ function bindDraft() {
           draft[key] = value;
           if (key === "weather") {
             weatherRequest++;
+            weatherReady = true;
             ui("#weather-message").textContent = "你的心情天氣";
           }
         }
         syncDraftButtons();
-        applySelection();
       });
     });
   }
@@ -185,6 +213,7 @@ for (const title of document.querySelectorAll(
 formatSectionHeading(ui("#description-title"), ui("#note-help"));
 
 function syncDraftButtons() {
+  makeToday.disabled = !weatherReady;
   for (const [id, key] of [
     ["mood-choice", "mood"],
     ["weather-choice", "weather"],
@@ -267,6 +296,5 @@ ui("#copy-thought").addEventListener("click", async () => {
 });
 bindDraft();
 acceptScenarioData(SCENARIOS);
-applySelection();
 
 selectLocalWeather();

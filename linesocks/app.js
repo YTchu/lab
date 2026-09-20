@@ -819,7 +819,7 @@ function drawSockThumbnail(){
 function syncSockThumbnailVisibility(){
  const panel=document.querySelector('.sock-mini'),packaging=document.querySelector('.packaging-control');
  if(!panel||!packaging)return;
- const visible=packaging.getBoundingClientRect().top<=0;
+ const visible=!packaging.hidden&&packaging.getBoundingClientRect().top<=0;
  if(panel.classList.contains('is-visible')!==visible){
   if(visible)drawSockThumbnail();
   panel.classList.toggle('is-visible',visible);panel.setAttribute('aria-hidden',String(!visible));
