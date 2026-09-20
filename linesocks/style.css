@@ -140,7 +140,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 .mood-fields .note-field > label.control-title { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px; width: 100%; text-align: left; }
 .mood-fields .note-field > label.control-title::after { content: ""; display: block; flex: 1 0 16px; height: 1px; background: var(--ui-border); align-self: center; }
-.app > .scene-editor { margin: 0px; padding: 20px 0px 0px; border: 0px; }
+.app > .scene-editor { display: none; margin: 0px; padding: 20px 0px 0px; border: 0px; }
 .app > .user-section .mood-fields { gap: 0px; }
 .user-section .icon-field { border: 0px; }
 @font-face { font-family: Mallory; src: local("Mallory Book"), local("Mallory-Book"), local("Mallory Regular"), local("Mallory-Regular"), local("Mallory"); font-weight: 400; font-style: normal; }
