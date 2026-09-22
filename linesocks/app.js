@@ -357,6 +357,12 @@ function renderIconPaths(svg,key){
   return path;
  }));
 }
+function renderActivityResult(iconKey,labelText){
+ const output=document.querySelector('#activity-result');output.replaceChildren();
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
+ renderIconPaths(svg,iconKey);
+ const label=document.createElement('span');label.textContent=labelText;output.append(svg,label);
+}
 
 let scenarioData=null, scenarioKey='', currentScenario=null, noteEdited=false;
 const SCENARIO_TIME={day:6,evening:17,night:19};
@@ -489,7 +495,6 @@ function draw(forExport=false){
  sock(444,50,false);sock(512,138,true);ctx.restore();
  if(showPackaging) drawPackaging();else drawPosterBacking();
  canvas.closest('.preview-section').style.backgroundColor=sceneColors.background;
- canvas.closest('.preview-section').classList.toggle('poster-preview',!showPackaging);
  renderHtmlPackageText();
  if(forExport&&showPackaging)paintPackageHtml();
  drawSockThumbnail();
@@ -720,10 +725,7 @@ function syncMoodScenario(force=false){
  const actionKey=randomPick(currentScenario?.activityOptions),action=scenarioData.actionCatalog[actionKey];
  currentActivity=actionKey;
  moodState.thought=action?.lucideIcon||'unknown';moodState.activityLabel=action?(activityEnglishLabels[actionKey]||actionKey.replace(/_/g,' ').toUpperCase()):'ACTIVITY UNAVAILABLE';
- const output=document.querySelector('#activity-result');output.replaceChildren();
- const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
- renderIconPaths(svg,moodState.thought);
- const label=document.createElement('span');label.textContent=action?`${action.label} · ${activityEnglishLabels[actionKey]||actionKey.replace(/_/g,' ').toUpperCase()}`:'等待天氣資料 · Waiting for weather';output.append(svg,label);
+ renderActivityResult(moodState.thought,action?`${action.label} · ${moodState.activityLabel}`:'等待天氣資料 · Waiting for weather');
  document.querySelector('#regenerate-activity').disabled=!currentScenario;
  if(!noteEdited){if(currentScenario)applyScenarioThought();else {acceptedNote='';document.querySelector('#mood-note').value='';}}
  if(currentScenario)generateScenarioStripes();

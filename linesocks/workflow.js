@@ -1,9 +1,10 @@
 "use strict";
 // Page flow and interactions built on the shared socks renderer.
 const ui = (s) => document.querySelector(s);
-let draft = { mood: "happy", weather: "sunny", time: scenarioTime() },
+let draft = { mood: null, weather: null, time: scenarioTime() },
   weatherRequest = 0,
-  weatherReady = false;
+  weatherReady = false,
+  flowLocked = false;
 const main = ui(".app"),
   preview = ui(".preview-section");
 const moodSection = ui('[aria-labelledby="mood-title"]'),
@@ -18,14 +19,12 @@ function element(tag, cls, html) {
   e.innerHTML = html;
   return e;
 }
-moodSection.id = "mood-section";
 moodSection.classList.add("flow-panel");
 weatherSection.classList.add("flow-panel");
 ui("#mood-title").textContent = "01 / 今天感覺如何？ · MOOD";
 ui("#weather-title").textContent = "02 / 天氣 · WEATHER";
 main.insertBefore(moodSection, preview);
 const conditions = element("div", "flow-conditions", "");
-conditions.id = "flow-conditions";
 conditions.hidden = false;
 main.insertBefore(conditions, preview);
 conditions.append(weatherSection);
@@ -89,13 +88,22 @@ preview.after(packaging, sceneSection);
 thoughtSection.hidden = false;
 activitySection.hidden = false;
 makeToday.addEventListener("click", () => {
-  if (!weatherReady) return;
-  for (const section of [preview, packaging, sceneSection, resultControls, exportSection]) {
+  if (!weatherReady || !draft.mood) return;
+  for (const section of [preview, packaging, resultControls, exportSection]) {
     section.hidden = false;
   }
   applySelection();
   syncSockThumbnailVisibility();
-  makeToday.setAttribute("aria-expanded", "true");
+  flowLocked = true;
+  for (const id of ["mood-choice", "weather-choice"]) {
+    for (const button of ui("#" + id).children) {
+      button.tabIndex = -1;
+      button.setAttribute("aria-disabled", "true");
+    }
+  }
+  moodSection.classList.add("flow-locked");
+  weatherSection.classList.add("flow-locked");
+  makeToday.remove();
   preview.scrollIntoView({
     behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
     block: "start",
@@ -140,7 +148,7 @@ async function selectLocalWeather() {
     draft.weather = found || randomPick(["sunny", "cloudy", "rainy", "windy", "stormy"]);
     ui("#weather-message").textContent = found
       ? "當地天氣。或選擇你的心情天氣"
-      : "可以選擇你的心情天氣";
+      : "定位失敗，選擇你的心情天氣";
     weatherReady = true;
     syncDraftButtons();
   } finally {
@@ -164,6 +172,7 @@ function bindDraft() {
         b.prepend(svg);
       }
       b.addEventListener("click", async () => {
+        if (flowLocked) return;
         if (key === "mood") conditions.hidden = false;
         if (value === "auto") {
           await selectLocalWeather();
@@ -201,7 +210,7 @@ function formatSectionHeading(title, message) {
   title.replaceChildren(row);
   title.classList.add("section-line-title");
 }
-const weatherMessage = element("span", "", "也可以選擇你想要的天氣");
+const weatherMessage = element("span", "", "允許定位，或選擇你的心情天氣");
 weatherMessage.id = "weather-message";
 weatherMessage.setAttribute("role", "status");
 formatSectionHeading(ui("#weather-title"), weatherMessage);
@@ -213,7 +222,7 @@ for (const title of document.querySelectorAll(
 formatSectionHeading(ui("#description-title"), ui("#note-help"));
 
 function syncDraftButtons() {
-  makeToday.disabled = !weatherReady;
+  makeToday.disabled = flowLocked || !weatherReady || !draft.mood;
   for (const [id, key] of [
     ["mood-choice", "mood"],
     ["weather-choice", "weather"],
@@ -249,15 +258,7 @@ ui("#regenerate-activity").addEventListener("click", () => {
   const action = scenarioData.actionCatalog[currentActivity];
   moodState.thought = action.lucideIcon;
   moodState.activityLabel = activityEnglishLabels[currentActivity] || currentActivity.toUpperCase();
-  const output = ui("#activity-result");
-  output.replaceChildren();
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("viewBox", "0 0 24 24");
-  svg.setAttribute("aria-hidden", "true");
-  renderIconPaths(svg, moodState.thought);
-  const label = document.createElement("span");
-  label.textContent = action.label + " · " + moodState.activityLabel;
-  output.append(svg, label);
+  renderActivityResult(moodState.thought, action.label + " · " + moodState.activityLabel);
   generateScenarioStripes();
   draw();
 });
@@ -274,27 +275,68 @@ const panel = element(
   '<form method="dialog"><button aria-label="關閉分享面板">✕</button></form><h2>分享今天的心情</h2><p>儲存圖片後，分享至限時動態或貼文。</p><button type="button" id="fallback-download">DOWNLOAD PNG ↓</button><button type="button" id="copy-thought">複製心情文字</button><p id="share-message" role="status"></p>',
 );
 document.body.append(panel);
+const tryAgain = element("button", "flow-secondary try-again", "再玩一次 · TRY AGAIN");
+tryAgain.type = "button";
+tryAgain.hidden = true;
+ui("#status").after(tryAgain);
+function showTryAgain() {
+  tryAgain.hidden = false;
+}
+function resetFlow() {
+  flowLocked = false;
+  weatherReady = false;
+  weatherRequest++;
+  draft = { mood: null, weather: null, time: scenarioTime() };
+  for (const section of [preview, packaging, resultControls, exportSection]) {
+    section.hidden = true;
+  }
+  resultExpanded = false;
+  resultControls.open = false;
+  resultControls.dataset.expanded = "false";
+  resultSummary.setAttribute("aria-expanded", "false");
+  moodSection.classList.remove("flow-locked");
+  weatherSection.classList.remove("flow-locked");
+  for (const id of ["mood-choice", "weather-choice"]) {
+    for (const button of ui("#" + id).children) {
+      button.removeAttribute("aria-disabled");
+      button.removeAttribute("tabindex");
+    }
+  }
+  ui("#weather-message").textContent = "允許定位可自動帶入天氣，或選擇你的心情天氣";
+  if (!makeToday.isConnected) conditions.after(makeToday);
+  makeToday.setAttribute("aria-expanded", "false");
+  tryAgain.hidden = true;
+  syncDraftButtons();
+  window.scrollTo({
+    top: 0,
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+  });
+}
+tryAgain.addEventListener("click", resetFlow);
 ui("#share-preview").addEventListener("click", async () => {
   try {
     const blob = await createPreviewPNG(story.checked ? 1920 : 1350);
     const file = new File([blob], "line-socks.png", { type: "image/png" });
     if (navigator.share && navigator.canShare?.({ files: [file] })) {
       await navigator.share({ files: [file], title: "LINE SOCKS", text: acceptedNote });
+      showTryAgain();
     } else panel.showModal();
   } catch (error) {
     if (error.name !== "AbortError") ui("#status").textContent = "分享未完成，請重試或下載 PNG。";
   }
 });
-ui("#fallback-download").addEventListener("click", () => savePreview());
+ui("#fallback-download").addEventListener("click", () => {
+  savePreview();
+  showTryAgain();
+});
 ui("#copy-thought").addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(acceptedNote);
     ui("#share-message").textContent = "已複製。";
+    showTryAgain();
   } catch {
     ui("#share-message").textContent = acceptedNote;
   }
 });
 bindDraft();
 acceptScenarioData(SCENARIOS);
-
-selectLocalWeather();

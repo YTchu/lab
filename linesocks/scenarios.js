@@ -1,97 +1,4 @@
 const SCENARIOS = {
-  "meta": {
-    "project": "Line Mood Socks",
-    "version": "1.0",
-    "description": "7 moods × 5 weather states × 3 times of day = 105 scenarios",
-    "scenarioCount": 105,
-    "selectionLogic": {
-      "thought": "match exact mood + weather + timeOfDay",
-      "activity": "randomly choose 1 item from activityOptions"
-    }
-  },
-  "dimensions": {
-    "moods": [
-      {
-        "id": "happy",
-        "label": "HAPPY",
-        "zhTW": "開心"
-      },
-      {
-        "id": "calm",
-        "label": "CALM",
-        "zhTW": "平靜"
-      },
-      {
-        "id": "tired",
-        "label": "TIRED",
-        "zhTW": "疲憊"
-      },
-      {
-        "id": "sad",
-        "label": "SAD",
-        "zhTW": "難過"
-      },
-      {
-        "id": "anxious",
-        "label": "ANXIOUS",
-        "zhTW": "焦慮"
-      },
-      {
-        "id": "angry",
-        "label": "ANGRY",
-        "zhTW": "生氣"
-      },
-      {
-        "id": "lonely",
-        "label": "LONELY",
-        "zhTW": "孤單"
-      }
-    ],
-    "weather": [
-      {
-        "id": "sunny",
-        "label": "SUNNY",
-        "zhTW": "晴天"
-      },
-      {
-        "id": "cloudy",
-        "label": "CLOUDY",
-        "zhTW": "多雲"
-      },
-      {
-        "id": "rainy",
-        "label": "RAINY",
-        "zhTW": "雨天"
-      },
-      {
-        "id": "windy",
-        "label": "WINDY",
-        "zhTW": "有風"
-      },
-      {
-        "id": "stormy",
-        "label": "STORMY",
-        "zhTW": "雷雨"
-      }
-    ],
-    "timeOfDay": [
-      {
-        "id": "day",
-        "label": "DAY",
-        "zhTW": "白天"
-      },
-      {
-        "id": "evening",
-        "label": "EVENING",
-        "zhTW": "傍晚"
-      },
-      {
-        "id": "night",
-        "label": "NIGHT",
-        "zhTW": "晚上"
-      }
-    ]
-  },
   "actionCatalog": {
     "walk": {
       "label": "散步",
@@ -284,7 +191,6 @@ const SCENARIOS = {
   },
   "scenarios": [
     {
-      "id": "happy_sunny_day",
       "mood": "happy",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -299,7 +205,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_sunny_evening",
       "mood": "happy",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -312,7 +217,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_sunny_night",
       "mood": "happy",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -326,7 +230,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_cloudy_day",
       "mood": "happy",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -341,7 +244,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_cloudy_evening",
       "mood": "happy",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -354,7 +256,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_cloudy_night",
       "mood": "happy",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -368,7 +269,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_rainy_day",
       "mood": "happy",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -384,7 +284,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_rainy_evening",
       "mood": "happy",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -398,7 +297,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_rainy_night",
       "mood": "happy",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -412,7 +310,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_windy_day",
       "mood": "happy",
       "weather": "windy",
       "timeOfDay": "day",
@@ -427,7 +324,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_windy_evening",
       "mood": "happy",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -440,7 +336,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_windy_night",
       "mood": "happy",
       "weather": "windy",
       "timeOfDay": "night",
@@ -454,7 +349,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_stormy_day",
       "mood": "happy",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -469,7 +363,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_stormy_evening",
       "mood": "happy",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -483,7 +376,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "happy_stormy_night",
       "mood": "happy",
       "weather": "stormy",
       "timeOfDay": "night",
@@ -497,7 +389,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_sunny_day",
       "mood": "calm",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -513,7 +404,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_sunny_evening",
       "mood": "calm",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -527,7 +417,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_sunny_night",
       "mood": "calm",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -541,7 +430,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_cloudy_day",
       "mood": "calm",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -558,7 +446,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_cloudy_evening",
       "mood": "calm",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -573,7 +460,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_cloudy_night",
       "mood": "calm",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -587,7 +473,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_rainy_day",
       "mood": "calm",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -604,7 +489,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_rainy_evening",
       "mood": "calm",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -619,7 +503,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_rainy_night",
       "mood": "calm",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -633,7 +516,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_windy_day",
       "mood": "calm",
       "weather": "windy",
       "timeOfDay": "day",
@@ -649,7 +531,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_windy_evening",
       "mood": "calm",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -663,7 +544,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_windy_night",
       "mood": "calm",
       "weather": "windy",
       "timeOfDay": "night",
@@ -677,7 +557,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_stormy_day",
       "mood": "calm",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -693,7 +572,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_stormy_evening",
       "mood": "calm",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -708,7 +586,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "calm_stormy_night",
       "mood": "calm",
       "weather": "stormy",
       "timeOfDay": "night",
@@ -722,7 +599,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_sunny_day",
       "mood": "tired",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -735,7 +611,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_sunny_evening",
       "mood": "tired",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -748,7 +623,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_sunny_night",
       "mood": "tired",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -761,7 +635,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_cloudy_day",
       "mood": "tired",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -774,7 +647,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_cloudy_evening",
       "mood": "tired",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -787,7 +659,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_cloudy_night",
       "mood": "tired",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -800,7 +671,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_rainy_day",
       "mood": "tired",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -813,7 +683,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_rainy_evening",
       "mood": "tired",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -826,7 +695,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_rainy_night",
       "mood": "tired",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -839,7 +707,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_windy_day",
       "mood": "tired",
       "weather": "windy",
       "timeOfDay": "day",
@@ -852,7 +719,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_windy_evening",
       "mood": "tired",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -865,7 +731,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_windy_night",
       "mood": "tired",
       "weather": "windy",
       "timeOfDay": "night",
@@ -878,7 +743,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_stormy_day",
       "mood": "tired",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -891,7 +755,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_stormy_evening",
       "mood": "tired",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -904,7 +767,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "tired_stormy_night",
       "mood": "tired",
       "weather": "stormy",
       "timeOfDay": "night",
@@ -917,7 +779,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_sunny_day",
       "mood": "sad",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -931,7 +792,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_sunny_evening",
       "mood": "sad",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -945,7 +805,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_sunny_night",
       "mood": "sad",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -958,7 +817,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_cloudy_day",
       "mood": "sad",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -972,7 +830,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_cloudy_evening",
       "mood": "sad",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -986,7 +843,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_cloudy_night",
       "mood": "sad",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -999,7 +855,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_rainy_day",
       "mood": "sad",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -1013,7 +868,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_rainy_evening",
       "mood": "sad",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -1027,7 +881,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_rainy_night",
       "mood": "sad",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -1040,7 +893,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_windy_day",
       "mood": "sad",
       "weather": "windy",
       "timeOfDay": "day",
@@ -1054,7 +906,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_windy_evening",
       "mood": "sad",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -1068,7 +919,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_windy_night",
       "mood": "sad",
       "weather": "windy",
       "timeOfDay": "night",
@@ -1081,7 +931,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_stormy_day",
       "mood": "sad",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -1095,7 +944,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_stormy_evening",
       "mood": "sad",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -1109,7 +957,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "sad_stormy_night",
       "mood": "sad",
       "weather": "stormy",
       "timeOfDay": "night",
@@ -1122,7 +969,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_sunny_day",
       "mood": "anxious",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -1136,7 +982,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_sunny_evening",
       "mood": "anxious",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -1150,7 +995,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_sunny_night",
       "mood": "anxious",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -1164,7 +1008,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_cloudy_day",
       "mood": "anxious",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -1179,7 +1022,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_cloudy_evening",
       "mood": "anxious",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -1194,7 +1036,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_cloudy_night",
       "mood": "anxious",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -1208,7 +1049,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_rainy_day",
       "mood": "anxious",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -1223,7 +1063,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_rainy_evening",
       "mood": "anxious",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -1238,7 +1077,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_rainy_night",
       "mood": "anxious",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -1252,7 +1090,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_windy_day",
       "mood": "anxious",
       "weather": "windy",
       "timeOfDay": "day",
@@ -1266,7 +1103,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_windy_evening",
       "mood": "anxious",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -1280,7 +1116,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_windy_night",
       "mood": "anxious",
       "weather": "windy",
       "timeOfDay": "night",
@@ -1294,7 +1129,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_stormy_day",
       "mood": "anxious",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -1309,7 +1143,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_stormy_evening",
       "mood": "anxious",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -1324,7 +1157,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "anxious_stormy_night",
       "mood": "anxious",
       "weather": "stormy",
       "timeOfDay": "night",
@@ -1338,7 +1170,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_sunny_day",
       "mood": "angry",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -1351,7 +1182,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_sunny_evening",
       "mood": "angry",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -1364,7 +1194,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_sunny_night",
       "mood": "angry",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -1377,7 +1206,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_cloudy_day",
       "mood": "angry",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -1390,7 +1218,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_cloudy_evening",
       "mood": "angry",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -1403,7 +1230,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_cloudy_night",
       "mood": "angry",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -1416,7 +1242,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_rainy_day",
       "mood": "angry",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -1429,7 +1254,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_rainy_evening",
       "mood": "angry",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -1442,7 +1266,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_rainy_night",
       "mood": "angry",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -1455,7 +1278,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_windy_day",
       "mood": "angry",
       "weather": "windy",
       "timeOfDay": "day",
@@ -1468,7 +1290,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_windy_evening",
       "mood": "angry",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -1481,7 +1302,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_windy_night",
       "mood": "angry",
       "weather": "windy",
       "timeOfDay": "night",
@@ -1494,7 +1314,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_stormy_day",
       "mood": "angry",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -1507,7 +1326,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_stormy_evening",
       "mood": "angry",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -1520,7 +1338,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "angry_stormy_night",
       "mood": "angry",
       "weather": "stormy",
       "timeOfDay": "night",
@@ -1533,7 +1350,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_sunny_day",
       "mood": "lonely",
       "weather": "sunny",
       "timeOfDay": "day",
@@ -1547,7 +1363,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_sunny_evening",
       "mood": "lonely",
       "weather": "sunny",
       "timeOfDay": "evening",
@@ -1560,7 +1375,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_sunny_night",
       "mood": "lonely",
       "weather": "sunny",
       "timeOfDay": "night",
@@ -1574,7 +1388,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_cloudy_day",
       "mood": "lonely",
       "weather": "cloudy",
       "timeOfDay": "day",
@@ -1588,7 +1401,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_cloudy_evening",
       "mood": "lonely",
       "weather": "cloudy",
       "timeOfDay": "evening",
@@ -1601,7 +1413,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_cloudy_night",
       "mood": "lonely",
       "weather": "cloudy",
       "timeOfDay": "night",
@@ -1615,7 +1426,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_rainy_day",
       "mood": "lonely",
       "weather": "rainy",
       "timeOfDay": "day",
@@ -1630,7 +1440,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_rainy_evening",
       "mood": "lonely",
       "weather": "rainy",
       "timeOfDay": "evening",
@@ -1644,7 +1453,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_rainy_night",
       "mood": "lonely",
       "weather": "rainy",
       "timeOfDay": "night",
@@ -1658,7 +1466,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_windy_day",
       "mood": "lonely",
       "weather": "windy",
       "timeOfDay": "day",
@@ -1672,7 +1479,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_windy_evening",
       "mood": "lonely",
       "weather": "windy",
       "timeOfDay": "evening",
@@ -1685,7 +1491,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_windy_night",
       "mood": "lonely",
       "weather": "windy",
       "timeOfDay": "night",
@@ -1699,7 +1504,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_stormy_day",
       "mood": "lonely",
       "weather": "stormy",
       "timeOfDay": "day",
@@ -1713,7 +1517,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_stormy_evening",
       "mood": "lonely",
       "weather": "stormy",
       "timeOfDay": "evening",
@@ -1727,7 +1530,6 @@ const SCENARIOS = {
       ]
     },
     {
-      "id": "lonely_stormy_night",
       "mood": "lonely",
       "weather": "stormy",
       "timeOfDay": "night",

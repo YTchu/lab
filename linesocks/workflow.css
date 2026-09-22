@@ -67,3 +67,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .make-today { justify-content: center; margin: 0 0 48px; }
 .make-today:hover:not(:disabled) { background: #454545; }
 .make-today:disabled { opacity: 0.5; cursor: wait; }
+
+.flow-panel.flow-locked #mood-choice .icon-option,
+.flow-panel.flow-locked #weather-choice button { pointer-events: none; }
+.flow-panel.flow-locked #mood-choice .icon-option:not([aria-pressed="true"]),
+.flow-panel.flow-locked #weather-choice button:not([aria-pressed="true"]) { opacity: 0.45; }
+
+.flow-secondary { display: flex; align-items: center; justify-content: center; min-height: 54px; width: 100%; margin-top: 16px; padding: 14px 18px; background: transparent; color: rgb(41, 41, 41); border: 1px solid rgb(204, 204, 204); border-radius: 6px; font-size: 13px; cursor: pointer; }
+.flow-secondary:hover { background: rgb(237, 237, 237); border-color: rgb(119, 119, 119); }

@@ -35,3 +35,9 @@
 - 以模擬瀏覽器 API 驗證原生分享成功／取消／失敗、定位成功／被拒絕及天氣回應；未代替使用者實際傳送分享內容。
 - 比對環境封鎖外部字型請求，以確認字型無法連線時仍可操作；實機系統分享與線上字型呈現仍依裝置／網路支援而定。
 - 無 JavaScript 執行錯誤；本機引用不依賴原版資料夾。
+
+## 手機 Safari 排版修正
+
+包裝文字層改以 `transform: scale(...)` 等比例縮放，取代會在 WebKit 造成小字放大與換行的 `zoom`；PNG 量測時移除縮放，維持 1080px 原尺寸。保留 Safari 的 `-webkit-text-size-adjust` 設定。
+
+已以 WebKit／Chrome 模擬手機尺寸驗證 375、390、430px，並測試 WebKit 載入實際 Montserrat 字型與兩種 PNG 匯出。上線時需一起更新 `index.html`、`style.css`、`app.js`，HTML 已更新快取版本。
